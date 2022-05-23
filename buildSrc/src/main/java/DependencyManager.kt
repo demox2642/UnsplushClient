@@ -3,6 +3,7 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 
 fun DependencyHandler.uiImplentation() {
     AndroidX.getAll().forEach { implementation(it) }
+    Coroutines.getAll().forEach { implementation(it) }
     Navigation.getAll().forEach { implementation(it) }
     implementation(Coil.coil)
     implementation("com.google.dagger:hilt-android:2.42")

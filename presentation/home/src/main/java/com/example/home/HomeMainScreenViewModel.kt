@@ -12,6 +12,7 @@ import com.example.home.usecase.GetPhotosListUserCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,17 +29,12 @@ class HomeMainScreenViewModel @Inject constructor(
     fun getPhotosList() {
         Log.e("HomeVM", "photos ")
         viewModelScope.launch {
-            try {
-                getPhotosListUserCase.getPhotosList(1, 10, Order.LATEST).cachedIn(viewModelScope)
-                    .collect {
-                        _photoList.value = it
-                        it.map {
-                            Log.e("HomeVM", "photos = $it ")
-                        }
-                    }
-            } catch (e: Exception) {
-                Log.e("HomeVM", "getPhotosList ERROR : ${e.message}")
-            }
+
+            getPhotosListUserCase.getPhotosList(1, 10, Order.LATEST)
+                .cachedIn(viewModelScope)
+                .collect {
+                    _photoList.value = it
+                }
         }
     }
 }
