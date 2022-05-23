@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="1.7">
+      <module name="UnsplushClient.buildSrc" target="11" />
+      <module name="UnsplushClient.buildSrc.main" target="11" />
+      <module name="UnsplushClient.buildSrc.test" target="11" />
+      <module name="UnsplushDiplom.app" target="11" />
+      <module name="UnsplushDiplom.buildSrc" target="11" />
+      <module name="UnsplushDiplom.buildSrc.main" target="11" />
+      <module name="UnsplushDiplom.buildSrc.test" target="11" />
+      <module name="UnsplushDiplom.data.collections" target="11" />
+      <module name="UnsplushDiplom.data.home" target="11" />
+      <module name="UnsplushDiplom.data.network" target="11" />
+      <module name="UnsplushDiplom.data.profile" target="11" />
+      <module name="UnsplushDiplom.data.user" target="11" />
+      <module name="UnsplushDiplom.domain.home" target="11" />
+      <module name="UnsplushDiplom.domain.home.main" target="11" />
+      <module name="UnsplushDiplom.domain.home.test" target="11" />
+      <module name="UnsplushDiplom.domain.network" target="11" />
+      <module name="UnsplushDiplom.domain.network.main" target="11" />
+      <module name="UnsplushDiplom.domain.network.test" target="11" />
+      <module name="UnsplushDiplom.domain.user" target="11" />
+      <module name="UnsplushDiplom.domain.user.main" target="11" />
+      <module name="UnsplushDiplom.domain.user.test" target="11" />
+      <module name="UnsplushDiplom.presentation.auth" target="11" />
+      <module name="UnsplushDiplom.presentation.base-ui" target="11" />
+      <module name="UnsplushDiplom.presentation.collections" target="11" />
+      <module name="UnsplushDiplom.presentation.home" target="11" />
+      <module name="UnsplushDiplom.presentation.onboarding" target="11" />
+      <module name="UnsplushDiplom.presentation.profile" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

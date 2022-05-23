@@ -1,0 +1,31 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "UnsplushDiplom"
+include ':app'
+include ':presentation:home'
+include ':presentation:collections'
+include ':presentation:profile'
+include ':data:collections'
+include ':data:home'
+include ':data:profile'
+include ':domain:profile'
+include ':domain:home'
+include ':domain:collections'
+include ':presentation:base-ui'
+include ':presentation:onboarding'
+include ':domain:user'
+include ':data:user'
+include ':domain:network'
+include ':data:network'
