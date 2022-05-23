@@ -69,9 +69,15 @@ dependencies {
     implementation project(path :':domain:user')
     implementation project(path :':data:user')
     implementation project(path :':data:network')
+    implementation project(path :':data:database')
     implementation 'androidx.core:core-ktx:1.7.0'
 
     implementation(AndroidX.composeUiToolingPreview )
+    implementation(Coil.coil)
+    implementation(Room.room)
+    implementation(Room.roomKTX)
+    implementation(Room.roomPaging)
+    kapt(Room.roomCompiler)
     debugImplementation(AndroidX.composeUiTooling)
     implementation(AndroidX.composeUi)
     implementation(AndroidX.composeMaterial )

@@ -6,18 +6,33 @@ fun DependencyHandler.uiImplentation() {
     Coroutines.getAll().forEach { implementation(it) }
     Navigation.getAll().forEach { implementation(it) }
     implementation(Coil.coil)
+    implementation(Room.room)
+    implementation(Room.roomKTX)
+    implementation(Room.roomPaging)
+    kapt(Room.roomCompiler)
     implementation("com.google.dagger:hilt-android:2.42")
     kapt("com.google.dagger:hilt-compiler:2.42")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 }
+
 fun DependencyHandler.domainImplentation() {
     implementation(Network.retrofitConvertor)
     // implementation(AndroidX.paging)
     Coroutines.getAll().forEach { implementation(it) }
     Network.getAll().forEach { implementation(it) }
 }
+
 fun DependencyHandler.domainNetworkImplentation() {
     Network.getAll().forEach { implementation(it) }
+}
+fun DependencyHandler.databaseImplementation() {
+    implementation(Coil.coil)
+    implementation(Room.room)
+    implementation(Room.roomKTX)
+    implementation(Room.roomPaging)
+    kapt(Room.roomCompiler)
+    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.4.1")
 }
 
 fun DependencyHandler.dataImplementation() {

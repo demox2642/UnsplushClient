@@ -10,6 +10,7 @@
       <module name="UnsplushDiplom.buildSrc.main" target="11" />
       <module name="UnsplushDiplom.buildSrc.test" target="11" />
       <module name="UnsplushDiplom.data.collections" target="11" />
+      <module name="UnsplushDiplom.data.database" target="11" />
       <module name="UnsplushDiplom.data.home" target="11" />
       <module name="UnsplushDiplom.data.network" target="11" />
       <module name="UnsplushDiplom.data.profile" target="11" />
