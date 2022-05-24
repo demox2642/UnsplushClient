@@ -2,11 +2,23 @@ package com.example.database.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.database.contracts.ProfileImageDBContracts
 import com.example.database.contracts.UrlsDBContracts
 
 @Entity(
-    tableName = UrlsDBContracts.TABLE_NAME
+    tableName = UrlsDBContracts.TABLE_NAME,
+    indices = [
+        Index(
+            value = [
+                UrlsDBContracts.Colums.RAW,
+                UrlsDBContracts.Colums.FULL,
+                UrlsDBContracts.Colums.REGULAR
+            ],
+            unique = true
+        )
+    ]
 )
 
 data class UrlsDB(

@@ -27,7 +27,7 @@ class HomeMainScreenViewModel @Inject constructor(
 
     @OptIn(InternalCoroutinesApi::class)
     fun getPhotosList() {
-        Log.e("HomeVM", "photos ")
+
         viewModelScope.launch {
 
             getPhotosListUserCase.getPhotosList(1, 10, Order.LATEST)

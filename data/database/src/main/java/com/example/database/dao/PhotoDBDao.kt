@@ -1,9 +1,6 @@
 package com.example.database.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.example.database.contracts.PhotoDBContracts
 import com.example.database.models.PhotoDB
 
@@ -12,7 +9,7 @@ interface PhotoDBDao {
     @Query("SELECT * FROM ${PhotoDBContracts.TABLE_NAME}")
     suspend fun getAllEmployers(): List<PhotoDB>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEmployers(employers: List<PhotoDB>)
 
     @Delete

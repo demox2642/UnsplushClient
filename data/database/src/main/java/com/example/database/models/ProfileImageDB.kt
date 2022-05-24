@@ -2,11 +2,23 @@ package com.example.database.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.database.contracts.LocationDBContracts
 import com.example.database.contracts.ProfileImageDBContracts
 
 @Entity(
-    tableName = ProfileImageDBContracts.TABLE_NAME
+    tableName = ProfileImageDBContracts.TABLE_NAME,
+    indices = [
+        Index(
+            value = [
+                ProfileImageDBContracts.Colums.SMALL,
+                ProfileImageDBContracts.Colums.MEDIUM,
+                ProfileImageDBContracts.Colums.LARGE
+            ],
+            unique = true
+        )
+    ]
 )
 
 data class ProfileImageDB(

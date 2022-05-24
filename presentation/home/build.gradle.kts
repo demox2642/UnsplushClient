@@ -42,10 +42,10 @@ android {
 }
 
 dependencies {
+    uiImplentation()
     api(project(Modules.Presentation.BASE_UI))
     api(project(Modules.Domain.HOME))
     api(project(Modules.Data.HOME))
-    uiImplentation()
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("com.google.android.gms:play-services-basement:18.0.2")

@@ -1,9 +1,6 @@
 package com.example.database.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.example.database.contracts.BadgeDBContracts
 import com.example.database.models.BadgeDB
 
@@ -13,7 +10,7 @@ interface BadgeDBDao {
     @Query("SELECT * FROM ${BadgeDBContracts.TABLE_NAME}")
     suspend fun getAllEmployers(): List<BadgeDB>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEmployers(employers: List<BadgeDB>)
 
     @Delete

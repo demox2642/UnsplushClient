@@ -1,7 +1,9 @@
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.kotlin.dsl.project
 
 fun DependencyHandler.uiImplentation() {
+    implementation(project(Modules.Data.DATABASE))
     AndroidX.getAll().forEach { implementation(it) }
     Coroutines.getAll().forEach { implementation(it) }
     Navigation.getAll().forEach { implementation(it) }
@@ -36,6 +38,7 @@ fun DependencyHandler.databaseImplementation() {
 }
 
 fun DependencyHandler.dataImplementation() {
+    implementation(project(Modules.Data.DATABASE))
     Network.getAll().forEach { implementation(it) }
     implementation(AndroidX.pagingCompose)
     implementation("androidx.core:core-ktx:1.7.0")

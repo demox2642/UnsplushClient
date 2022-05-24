@@ -1,9 +1,6 @@
 package com.example.database.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.example.database.contracts.LocationDBContracts
 import com.example.database.models.LocationDB
 
@@ -12,7 +9,7 @@ interface LocationDBDao {
     @Query("SELECT * FROM ${LocationDBContracts.TABLE_NAME}")
     suspend fun getAllEmployers(): List<LocationDB>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEmployers(employers: List<LocationDB>)
 
     @Delete

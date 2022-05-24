@@ -2,11 +2,21 @@ package com.example.database.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.database.contracts.BadgeDBContracts
 
 @Entity(
-    tableName = BadgeDBContracts.TABLE_NAME
+    tableName = BadgeDBContracts.TABLE_NAME,
+    indices = [
+        Index(
+            value = [
+                BadgeDBContracts.Colums.TITLE,
+                BadgeDBContracts.Colums.LINK
+            ],
+            unique = true
+        )
+    ]
 )
 data class BadgeDB(
     @PrimaryKey(autoGenerate = true)

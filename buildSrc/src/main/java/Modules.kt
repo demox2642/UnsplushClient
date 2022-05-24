@@ -25,5 +25,6 @@ object Modules {
         const val COLLECTIONS = ":data:collections"
         const val HOME = ":data:home"
         const val PROFILE = ":data:profile"
+        const val DATABASE = ":data:database"
     }
 }

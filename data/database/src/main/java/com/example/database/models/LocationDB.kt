@@ -2,11 +2,22 @@ package com.example.database.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.database.contracts.BadgeDBContracts
 import com.example.database.contracts.LocationDBContracts
 
 @Entity(
-    tableName = LocationDBContracts.TABLE_NAME
+    tableName = LocationDBContracts.TABLE_NAME,
+    indices = [
+        Index(
+            value = [
+                LocationDBContracts.Colums.CITY,
+                LocationDBContracts.Colums.COUNTRY
+            ],
+            unique = true
+        )
+    ]
 )
 
 data class LocationDB(

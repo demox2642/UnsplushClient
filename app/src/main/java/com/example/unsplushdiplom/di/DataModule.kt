@@ -1,15 +1,13 @@
 package com.example.unsplushdiplom.di
 
 import android.content.Context
+import com.example.database.UnsplashDatabase
 import com.example.home.repository.HomeRepository
 import com.example.home.reposutory.HomeRepositoryImp
-import com.example.home.reposutory.UnsplashResponseHandler
 import com.example.home.services.HomeService
 import com.example.services.AuthService
 import com.example.services.AuthenticationInterceptor
 import com.example.user.models.Constants
-import com.example.user.repository.AuthRepository
-import com.example.user.repository.AuthRepositoryImpl
 import com.example.user.repository.UserRepository
 import com.example.user.repository.UserRepositoryImpl
 import com.example.user.storage.SharedPrefUserStorage
@@ -52,9 +50,9 @@ class DataModule {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    @Provides
-    @Singleton
-    fun providesNetworkService(retrofit: Retrofit) = ServiceProvider(retrofit = retrofit)
+//    @Provides
+//    @Singleton
+//    fun providesNetworkService(retrofit: Retrofit) = ServiceProvider(retrofit = retrofit)
 
     @Singleton
     @Provides
@@ -70,8 +68,8 @@ class DataModule {
 
     @Singleton
     @Provides
-    fun provideHomeRepository(homeService: HomeService): HomeRepository {
-        return HomeRepositoryImp(homeService = homeService, responseHandler = UnsplashResponseHandler())
+    fun provideHomeRepository(homeService: HomeService, unsplashDatabase: UnsplashDatabase): HomeRepository {
+        return HomeRepositoryImp(homeService = homeService, unsplashDatabase = unsplashDatabase)
     }
 
     @Singleton
