@@ -2,7 +2,7 @@ package com.example.home.repository
 
 import androidx.paging.PagingData
 import com.example.home.models.Order
-import com.example.home.models.Photo
+import com.example.home.models.UnsplashImage
 import kotlinx.coroutines.flow.Flow
 
 interface HomeRepository {
@@ -11,5 +11,5 @@ interface HomeRepository {
         page: Int?,
         perPage: Int?,
         order: Order?
-    ): Flow<PagingData<Photo>>
+    ): Flow<PagingData<UnsplashImage>>
 }

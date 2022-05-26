@@ -1,6 +1,7 @@
 package com.example.unsplushdiplom.di
 
 import android.content.Context
+import androidx.paging.ExperimentalPagingApi
 import com.example.database.UnsplashDatabase
 import com.example.home.repository.HomeRepository
 import com.example.home.reposutory.HomeRepositoryImp
@@ -50,9 +51,9 @@ class DataModule {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-//    @Provides
-//    @Singleton
-//    fun providesNetworkService(retrofit: Retrofit) = ServiceProvider(retrofit = retrofit)
+    @Provides
+    @Singleton
+    fun providesNetworkService(retrofit: Retrofit) = ServiceProvider(retrofit = retrofit)
 
     @Singleton
     @Provides
@@ -66,6 +67,7 @@ class DataModule {
         return UserRepositoryImpl(userStorage = userStorage)
     }
 
+    @OptIn(ExperimentalPagingApi::class)
     @Singleton
     @Provides
     fun provideHomeRepository(homeService: HomeService, unsplashDatabase: UnsplashDatabase): HomeRepository {

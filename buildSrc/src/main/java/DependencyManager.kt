@@ -33,12 +33,17 @@ fun DependencyHandler.databaseImplementation() {
     implementation(Room.roomKTX)
     implementation(Room.roomPaging)
     kapt(Room.roomCompiler)
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.4.1")
 }
 
 fun DependencyHandler.dataImplementation() {
     implementation(project(Modules.Data.DATABASE))
+    implementation(Room.room)
+    implementation(Room.roomKTX)
+    implementation(Room.roomPaging)
     Network.getAll().forEach { implementation(it) }
     implementation(AndroidX.pagingCompose)
     implementation("androidx.core:core-ktx:1.7.0")

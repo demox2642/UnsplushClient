@@ -6,10 +6,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.home.models.Order
-import com.example.home.models.Photo
+import com.example.home.models.UnsplashImage
 import com.example.home.usecase.GetPhotosListUserCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -19,13 +18,12 @@ import javax.inject.Inject
 class HomeMainScreenViewModel @Inject constructor(
     private val getPhotosListUserCase: GetPhotosListUserCase
 ) : ViewModel() {
-    private val _photoList = MutableStateFlow<PagingData<Photo>>(PagingData.empty())
+    private val _photoList = MutableStateFlow<PagingData<UnsplashImage>>(PagingData.empty())
     val photoList = _photoList.asStateFlow()
     init {
         getPhotosList()
     }
 
-    @OptIn(InternalCoroutinesApi::class)
     fun getPhotosList() {
 
         viewModelScope.launch {
@@ -34,6 +32,7 @@ class HomeMainScreenViewModel @Inject constructor(
                 .cachedIn(viewModelScope)
                 .collect {
                     _photoList.value = it
+                    Log.e("HomeMainScreenViewModel", "photo = $it")
                 }
         }
     }

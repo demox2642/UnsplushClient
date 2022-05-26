@@ -11,5 +11,7 @@ java {
 dependencies {
 
     implementation("androidx.paging:paging-common-ktx:3.1.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    implementation("androidx.room:room-common:2.4.2")
     domainImplentation()
 }
