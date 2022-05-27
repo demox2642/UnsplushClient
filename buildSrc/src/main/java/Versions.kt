@@ -15,4 +15,5 @@ object Versions {
     const val viewModelKtxVersion = "2.2.0"
     const val pagingVersion = "3.0.1"
     const val room = "2.4.2"
+    const val coil = "2.1.0"
 }

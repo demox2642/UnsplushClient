@@ -1,116 +1,195 @@
-//package com.example.home.paging
-//
-//import android.util.Log
-//import androidx.paging.PagingSource
-//import androidx.paging.PagingState
-//import androidx.room.withTransaction
-//import com.example.database.UnsplashDatabase
-//import com.example.database.models.*
-//import com.example.home.models.Order
-//import com.example.home.models.Photo
-//import com.example.home.paging.PagingConst.PAGE_SIZE
-//import com.example.home.services.HomeService
-//
-//class SearchPagingSource(
-//    private val homeService: HomeService,
-//    private val order: Order?,
-//    private val unsplashDatabase: UnsplashDatabase
-//) : PagingSource<Int, Photo>() {
-//    override fun getRefreshKey(state: PagingState<Int, Photo>): Int? {
-//        return state.anchorPosition
-//    }
-//
-//    private val profileImageDBDao = unsplashDatabase.profileImageDBDao()
-////    private val userDBDao = unsplashDatabase.userDBDao()
-////    private val urlsDBDao = unsplashDatabase.urlsDBDao()
-//    private val photoDBDao = unsplashDatabase.photoDBDao()
-//
-//    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
-//        val currentPage = params.key ?: 1
-//
-//        return try {
-//            val response = homeService.getPhotoList(page = currentPage, perPage = PAGE_SIZE, orderBy = order?.name)
-//            val endOfPaginationReached = response.isEmpty()
-//
-//            if (response.isNotEmpty()) {
-//                try {
-//                    unsplashDatabase.withTransaction {
-//
-//                        for (i in 0 until response.size) {
-//
-//                            val profileIm =
-//                                ProfileImageDB(
-//                                    id = response[i].user?.id!!,
-//                                    small = response[i].user?.profileImage!!.small,
-//                                    medium = response[i].user?.profileImage!!.medium,
-//                                    large = response[i].user?.profileImage!!.large
-//                                )
-//
-//                            val user =
-//                                UserDB(
-//                                    user_id = response[i].user!!.id!!,
-//                                    username = response[i].user!!.username,
-//                                    name = response[i].user!!.name,
-//                                    bio = response[i].user!!.bio,
-//                                    location = response[i].user!!.location,
-//                                    totalLikes = response[i].user!!.totalLikes,
-//                                    downloads = response[i].user!!.downloads,
-//                                    profileImage = profileIm,
-//                                    totalPhotos = response[i].user!!.totalPhotos,
-//                                    totalCollections = response[i].user!!.totalCollections,
-//                                    followedByUser = response[i].user!!.followedByUser,
-//                                    followersCount = response[i].user!!.followersCount,
-//                                    firstName = response[i].user!!.firstName,
-//                                    lastName = response[i].user!!.lastName,
-//                                    instagramUsername = response[i].user!!.instagramUsername,
-//                                    twitterUsername = response[i].user!!.twitterUsername,
-//                                    portfolioUrl = response[i].user!!.portfolioUrl,
-//                                    user_updatedAt = response[i].user!!.updatedAt
-//                                )
-//
-//                            val urls =
-//                                UrlsDB(
-//                                    // id = response[i].id,
-//                                    raw = response[i].urls!!.raw,
-//                                    full = response[i].urls!!.full,
-//                                    regular = response[i].urls!!.regular,
-//                                    //   small = response[i].urls!!.small,
-//                                    thumb = response[i].urls!!.thumb
-//                                )
-//
-//                            photoDBDao.insertPhotoDBDao(
-//                                PhotoDB(
-//                                    photo_id = response[i].id,
-//                                    width = response[i].width,
-//                                    height = response[i].height,
-//                                    likes = response[i].likes,
-//                                    photo_urls = urls,
-//                                    user = user,
-//                                    likedByUser = response[i].likedByUser,
-//                                    createdAt = response[i].createdAt,
-//                                    updatedAt = response[i].updatedAt,
-//                                )
-//                            )
-//                        }
-//                    }
-//                } catch (e: Exception) {
-//                    Log.e("SearchPagingSource", "ERROR:$e")
-//                }
-//
-//                LoadResult.Page(
-//                    data = response,
-//                    prevKey = if (currentPage == 1) null else currentPage - 1,
-//                    nextKey = if (endOfPaginationReached) null else currentPage + 1
-//                )
-//            } else {
-//                LoadResult.Page(
-//                    data = emptyList(),
-//                    prevKey = null,
-//                    nextKey = null
-//                )
-//            }
-//        } catch (e: Exception) {
-//            LoadResult.Error(e)
-//        }
-//    }
-//}
+package com.example.home.paging
+
+import android.util.Log
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
+import androidx.room.withTransaction
+import com.example.database.UnsplashDatabase
+import com.example.database.models.*
+import com.example.home.models.HomePhoto
+import com.example.home.models.Order
+import com.example.home.paging.PagingConst.PAGE_SIZE
+import com.example.home.services.HomeService
+
+class SearchPagingSource(
+    private val homeService: HomeService,
+    private val unsplashDatabase: UnsplashDatabase
+) : PagingSource<Int, HomePhoto>() {
+
+    private val photoDBDao = unsplashDatabase.photoDBDao()
+    private val profileImageDBDao = unsplashDatabase.profileImageDBDao()
+    private val urlsDBDao = unsplashDatabase.urlsDBDao()
+    private val userDBDao = unsplashDatabase.userDBDao()
+
+    override fun getRefreshKey(state: PagingState<Int, HomePhoto>): Int? {
+        return state.anchorPosition
+    }
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, HomePhoto> {
+        val currentPage = params.key ?: 1
+        return try {
+            val response = homeService.getPhotoList(page = currentPage, perPage = PAGE_SIZE, orderBy = Order.POPULAR.name)
+
+            val endOfPaginationReached = response.isEmpty()
+            if (response.isNotEmpty()) {
+                for (i in 0 until response.size) {
+                    val photo = response[i]
+                    Log.e("SearchPagingSource", "photo=${photo.location}")
+
+                    var profileIm: ProfileImageDB? = null
+                    var urls: UrlsDB? = null
+                    var user: UserDB? = null
+
+                    unsplashDatabase.withTransaction {
+                        if (photo.user != null) {
+
+                            if (photo.user!!.profileImage != null) {
+                                profileIm = ProfileImageDB(
+                                    id = photo.user!!.id!!,
+                                    small = photo.user!!.profileImage!!.small,
+                                    medium = photo.user!!.profileImage!!.medium,
+                                    large = photo.user!!.profileImage!!.large
+                                )
+                                profileImageDBDao.insertProfileImageDB(profileIm!!)
+                            }
+
+                            user = UserDB(
+                                id = photo.user!!.id!!,
+                                username = photo.user!!.username,
+                                name = photo.user!!.name,
+                                bio = photo.user!!.bio,
+                                location = photo.user!!.location,
+                                totalLikes = photo.user!!.totalLikes,
+                                downloads = photo.user!!.downloads,
+                                profileImage = if (profileIm != null) {
+                                    photo.user!!.id!!
+                                } else {
+                                    null
+                                },
+                                totalPhotos = photo.user!!.totalPhotos,
+                                totalCollections = photo.user!!.totalCollections,
+                                followedByUser = photo.user!!.followedByUser,
+                                followersCount = photo.user!!.followersCount,
+                                firstName = photo.user!!.firstName,
+                                lastName = photo.user!!.lastName,
+                                instagramUsername = photo.user!!.instagramUsername,
+                                twitterUsername = photo.user!!.twitterUsername,
+                                portfolioUrl = photo.user!!.portfolioUrl,
+                                updatedAt = photo.user!!.updatedAt
+                            )
+                            userDBDao.insertUserDB(user!!)
+                        }
+
+                        if (photo.urls != null) {
+                            urls = UrlsDB(
+                                id = photo.id!!,
+                                raw = photo.urls!!.raw,
+                                full = photo.urls!!.full,
+                                regular = photo.urls!!.regular,
+                                small = photo.urls!!.small,
+                                thumb = photo.urls!!.thumb,
+                            )
+                            urlsDBDao.insertUrlsDB(urls!!)
+                        }
+
+                        photoDBDao.insertPhotoDB(
+
+                            PhotoDB(
+                                id = photo.id!!,
+                                width = photo.width,
+                                height = photo.height,
+                                color = photo.color,
+                                downloads = photo.downloads,
+                                likes = photo.likes,
+                                urls = photo.id!!,
+                                user = photo.user!!.id,
+                                likedByUser = photo.likedByUser,
+                                createdAt = photo.id,
+                                updatedAt = photo.id,
+                            )
+                        )
+                    }
+                }
+
+                val photoToHome = mutableListOf<HomePhoto>()
+                response.forEach { Photo ->
+                    photoToHome.add(
+                        HomePhoto(
+                            id = Photo.id!!,
+                            likes = Photo.likes,
+                            urls_regular = Photo.urls?.regular,
+                            user_name = Photo.user?.username,
+                            user_fio = Photo.user?.name,
+                            user_img = Photo.user?.profileImage?.large,
+                            likedByUser = Photo.likedByUser
+                        )
+                    )
+                }
+
+                LoadResult.Page(
+                    data = photoToHome,
+                    prevKey = if (currentPage == 1) null else currentPage - 1,
+                    nextKey = if (endOfPaginationReached) null else currentPage + 1
+                )
+            } else {
+                var photoInDB: List<PhotoWithInfoDB> = emptyList()
+                unsplashDatabase.withTransaction {
+                    photoInDB = photoDBDao.getHomePhoto()
+                }
+                Log.e("SearchPagingSource", "NO INTERNET else")
+                val photoToHome = mutableListOf<HomePhoto>()
+                photoInDB.forEach { PhotoDB ->
+                    photoToHome.add(
+                        HomePhoto(
+                            id = PhotoDB.id,
+                            likes = PhotoDB.likes,
+                            urls_regular = PhotoDB.urls_regular,
+                            user_name = PhotoDB.user_username,
+                            user_fio = PhotoDB.user_name,
+                            user_img = PhotoDB.user_profileImage_large,
+                            likedByUser = PhotoDB.likedByUser
+                        )
+                    )
+                }
+                Log.e("SearchPagingSource", "NO INTERNET photo=$photoToHome")
+                LoadResult.Page(
+                    data = emptyList(),
+                    prevKey = null,
+                    nextKey = null
+                )
+            }
+        } catch (e: Exception) {
+            var photoInDB: List<PhotoWithInfoDB> = emptyList()
+            unsplashDatabase.withTransaction {
+                photoInDB = photoDBDao.getHomePhoto()
+            }
+            Log.e("SearchPagingSource", "NO INTERNET else")
+            val photoToHome = mutableListOf<HomePhoto>()
+            photoInDB.forEach { PhotoDB ->
+                photoToHome.add(
+                    HomePhoto(
+                        id = PhotoDB.id,
+                        likes = PhotoDB.likes,
+                        urls_regular = PhotoDB.urls_regular,
+                        user_name = PhotoDB.user_username,
+                        user_fio = PhotoDB.user_name,
+                        user_img = PhotoDB.user_profileImage_large,
+                        likedByUser = PhotoDB.likedByUser
+                    )
+                )
+            }
+            Log.e("SearchPagingSource", "NO INTERNET photo=$photoToHome")
+            Log.e("SearchPagingSource", "NO INTERNET $e")
+
+            if (photoToHome.isEmpty()) {
+                LoadResult.Error(Throwable("No Internet, no cache"))
+            } else {
+                LoadResult.Page(
+                    data = photoToHome,
+                    prevKey = null,
+                    nextKey = null
+                )
+            }
+        }
+    }
+}

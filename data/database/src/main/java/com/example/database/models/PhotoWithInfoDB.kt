@@ -1,0 +1,38 @@
+package com.example.database.models
+
+data class PhotoWithInfoDB(
+
+    var id: String,
+    var width: Int? = null,
+    var height: Int? = null,
+    var color: String? = null,
+    var downloads: Int? = null,
+    var likes: Int? = null,
+    var urls_raw: String? = null,
+    var urls_regular: String? = null,
+    var urls_small: String? = null,
+    var urls_thumb: String? = null,
+    var user_id: String? = null,
+    var user_username: String? = null,
+    var user_name: String? = null,
+    var user_bio: String? = null,
+    var user_location: String? = null,
+    var user_totalLikes: Int? = null,
+    var user_downloads: Int? = null,
+    var user_profileImage_small: String? = null,
+    var user_profileImage_medium: String? = null,
+    var user_profileImage_large: String? = null,
+    var user_totalPhotos: Int? = null,
+    var user_totalCollections: Int? = null,
+    var user_followedByUser: Boolean? = null,
+    var user_followersCount: Int? = null,
+    var user_firstName: String? = null,
+    var user_lastName: String? = null,
+    var user_instagramUsername: String? = null,
+    var user_twitterUsername: String? = null,
+    var user_portfolioUrl: String? = null,
+    var user_updatedAt: String? = null,
+    var likedByUser: Boolean? = null,
+    var createdAt: String? = null,
+    var updatedAt: String? = null
+)

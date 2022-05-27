@@ -1,16 +1,11 @@
 package com.example.home.usecase
 
 import androidx.paging.PagingData
-import com.example.home.models.Order
-import com.example.home.models.UnsplashImage
+import com.example.home.models.HomePhoto
 import com.example.home.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetPhotosListUserCase(private val homeRepository: HomeRepository) {
 
-    suspend fun getPhotosList(
-        page: Int?,
-        perPage: Int?,
-        order: Order?
-    ): Flow<PagingData<UnsplashImage>> = homeRepository.getPhotosList(page, perPage, order)
+    suspend fun getPhotosList(): Flow<PagingData<HomePhoto>> = homeRepository.getPhotosList()
 }
