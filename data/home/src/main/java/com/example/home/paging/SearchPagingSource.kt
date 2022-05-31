@@ -32,8 +32,8 @@ class SearchPagingSource(
 
             val endOfPaginationReached = response.isEmpty()
             if (response.isNotEmpty()) {
-                for (i in 0 until response.size) {
-                    val photo = response[i]
+                response.map { photo ->
+                    // val photo = response[i]
                     Log.e("SearchPagingSource", "photo=${photo.location}")
 
                     var profileIm: ProfileImageDB? = null
@@ -165,7 +165,7 @@ class SearchPagingSource(
             }
             Log.e("SearchPagingSource", "NO INTERNET else")
             val photoToHome = mutableListOf<HomePhoto>()
-            photoInDB.forEach { PhotoDB ->
+            photoInDB.map { PhotoDB ->
                 photoToHome.add(
                     HomePhoto(
                         id = PhotoDB.id,

@@ -30,6 +30,11 @@ object Accompanist {
     const val flowLayout = "com.google.accompanist:accompanist-flowlayout:${Versions.accompanist}"
     const val systemUiController = "com.google.accompanist:accompanist-systemuicontroller:${Versions.accompanist}"
     const val viewPager = "com.google.accompanist:accompanist-pager:0.18.0"
+    const val swiperefresh = "com.google.accompanist:accompanist-swiperefresh:0.24.9-beta"
+    fun getAll() = Accompanist::class.memberProperties
+        .filter { it.isConst }
+        .map { it.getter.call().toString() }
+        .toSet()
 }
 
 object Navigation {

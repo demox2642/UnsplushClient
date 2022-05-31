@@ -24,6 +24,7 @@ class AppColors(
     colorTextIndigo: Color,
     colorTextPink: Color,
 
+    systemTopBarColors: Color,
     systemGraphPrimary: Color,
     systemGraphSecondary: Color,
     systemGraphTertiary: Color,
@@ -89,6 +90,8 @@ class AppColors(
     var colorTextPink by mutableStateOf(colorTextPink)
         private set
 
+    var systemTopBarColors by mutableStateOf(systemTopBarColors)
+        private set
     var systemGraphPrimary by mutableStateOf(systemGraphPrimary)
         private set
     var systemGraphSecondary by mutableStateOf(systemGraphSecondary)
@@ -101,7 +104,7 @@ class AppColors(
         private set
 
     var systemButtonPrimaryColor by mutableStateOf(systemButtonPrimaryColor)
-    private set
+        private set
 
     var controlGraphBlue by mutableStateOf(controlGraphBlue)
         private set
@@ -170,6 +173,7 @@ class AppColors(
         colorTextIndigo: Color = this.colorTextIndigo,
         colorTextPink: Color = this.colorTextPink,
 
+        systemTopBarColors: Color = this.systemTopBarColors,
         systemGraphPrimary: Color = this.systemGraphPrimary,
         systemGraphSecondary: Color = this.systemGraphSecondary,
         systemGraphTertiary: Color = this.systemGraphTertiary,
@@ -220,6 +224,7 @@ class AppColors(
         colorTextIndigo,
         colorTextPink,
 
+        systemTopBarColors,
         systemGraphPrimary,
         systemGraphSecondary,
         systemGraphTertiary,
@@ -271,6 +276,7 @@ class AppColors(
         colorTextIndigo = other.colorTextIndigo
         colorTextPink = other.colorTextPink
 
+        systemTopBarColors = other.systemTopBarColors
         systemGraphPrimary = other.systemGraphPrimary
         systemGraphSecondary = other.systemGraphSecondary
         systemGraphTertiary = other.systemGraphTertiary
@@ -339,6 +345,7 @@ private val ColorTextDarkWarning = Color(0xFFFF8C19)
 private val ColorTextDarkIndigo = Color(0xFF5C2EE6)
 private val ColorTextDarkPink = Color(0xFF5C2EE6)
 
+private val SystemTopBarColors = Color(0xFF84ED0A)
 private val SystemGraphPrimary = Color(0xFF1B1D21)
 private val SystemGraphSecondary = Color(0xFF5E6775)
 private val SystemGraphTertiary = Color(0xFFD3D6DD)
@@ -421,6 +428,7 @@ fun appLightColors(
     colorTextIndigo: Color = ColorTextIndigo,
     colorTextPink: Color = ColorTextPink,
 
+    systemTopBarColors: Color = SystemTopBarColors,
     systemGraphPrimary: Color = SystemGraphPrimary,
     systemGraphSecondary: Color = SystemGraphSecondary,
     systemGraphTertiary: Color = SystemGraphTertiary,
@@ -471,6 +479,7 @@ fun appLightColors(
     colorTextIndigo = colorTextIndigo,
     colorTextPink = colorTextPink,
 
+    systemTopBarColors = systemTopBarColors,
     systemGraphPrimary = systemGraphPrimary,
     systemGraphSecondary = systemGraphSecondary,
     systemGraphTertiary = systemGraphTertiary,
@@ -524,6 +533,7 @@ fun appDarkColors(
     colorTextIndigo: Color = ColorTextDarkIndigo,
     colorTextPink: Color = ColorTextDarkPink,
 
+    systemTopBarColors: Color = SystemTopBarColors,
     systemGraphPrimary: Color = SystemGraphDarkPrimary,
     systemGraphSecondary: Color = SystemGraphDarkSecondary,
     systemGraphTertiary: Color = SystemGraphDarkTertiary,
@@ -573,6 +583,7 @@ fun appDarkColors(
     colorTextIndigo = colorTextIndigo,
     colorTextPink = colorTextPink,
 
+    systemTopBarColors = systemTopBarColors,
     systemGraphPrimary = systemGraphPrimary,
     systemGraphSecondary = systemGraphSecondary,
     systemGraphTertiary = systemGraphTertiary,

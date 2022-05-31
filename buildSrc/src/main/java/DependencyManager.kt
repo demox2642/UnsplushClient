@@ -7,6 +7,7 @@ fun DependencyHandler.uiImplentation() {
     AndroidX.getAll().forEach { implementation(it) }
     Coroutines.getAll().forEach { implementation(it) }
     Navigation.getAll().forEach { implementation(it) }
+    Accompanist.getAll().forEach { implementation(it) }
     implementation(Coil.coil)
     implementation(Room.room)
     implementation(Room.roomKTX)

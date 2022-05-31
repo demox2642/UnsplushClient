@@ -58,7 +58,6 @@ dependencies {
     implementation(AndroidX.composeUi)
     implementation(AndroidX.composeMaterial)
     implementation(AndroidX.composeMaterial3)
-    implementation(Accompanist.viewPager)
     implementation(AndroidX.composeMaterialIconsExtended)
     implementation(AndroidX.composeConstraint)
     implementation(Navigation.composeNavigation)

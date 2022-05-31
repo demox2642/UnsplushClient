@@ -4,6 +4,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.database.dao.*
 import com.example.database.models.*
+import com.example.database.dao.UnsplashRemoteKeysDao
+import com.example.database.models.UnsplashRemoteKeys
 
 @Database(
     entities = [
@@ -11,7 +13,9 @@ import com.example.database.models.*
         PhotoDB::class,
         ProfileImageDB::class,
         UrlsDB::class,
-        UserDB ::class
+        UserDB ::class,
+        UnsplashImage::class,
+        UnsplashRemoteKeys::class
     ],
     version = 1
 )
@@ -20,4 +24,7 @@ abstract class UnsplashDatabase : RoomDatabase() {
     abstract fun profileImageDBDao(): ProfileImageDBDao
     abstract fun urlsDBDao(): UrlsDBDao
     abstract fun userDBDao(): UserDBDao
+
+    abstract fun unsplashImageDao(): UnsplashImageDao
+    abstract fun unsplashRemoteKeysDao(): UnsplashRemoteKeysDao
 }

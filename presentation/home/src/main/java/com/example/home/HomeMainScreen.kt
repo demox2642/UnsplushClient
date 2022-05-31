@@ -1,5 +1,6 @@
 package com.example.home
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -8,7 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -30,24 +31,66 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.example.base_ui.dialogs.CustomErrorDialog
+import com.example.base_ui.topbar.TopBarSearch
 import com.example.home.models.HomePhoto
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun HomeMainScreen() {
     val viewModel = hiltViewModel< HomeMainScreenViewModel>()
     val searchedImages = viewModel.photoList.collectAsLazyPagingItems()
+    val swipeRefreshState by viewModel.refreshState.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+
+    val openErrorDialog by viewModel.errorMessageState.collectAsState()
+
+    viewModel.changeRefreshStatus(searchedImages.loadState.prepend.endOfPaginationReached.not())
+    if (searchedImages.loadState.mediator != null) {
+        viewModel.changeRefreshStatus(searchedImages.loadState.mediator!!.prepend.endOfPaginationReached)
+        searchedImages.loadState.mediator!!.refresh.toString()
+        viewModel.postError(searchedImages.loadState.mediator!!.refresh)
+    }
+
     Scaffold(
+        topBar = { TopBarSearch() },
 
         content = {
-            ListContent(items = searchedImages)
+            SwipeRefresh(
+
+                state = rememberSwipeRefreshState(isRefreshing = swipeRefreshState), // remeberSwipeRefreshState(swipeRefreshState),
+                onRefresh = { viewModel.getPhotosList() }
+
+            ) {
+                ListContent(items = searchedImages, errorMessage)
+
+                if (openErrorDialog) {
+                    Column(
+                        modifier = Modifier.fillMaxHeight(),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        CustomErrorDialog(
+
+                            title = "Uncknow Error",
+                            message = errorMessage,
+                            dismissButtonText = "Exit",
+                            closeDialog = viewModel::closeErrorDialog
+                        )
+                    }
+                }
+
+                Log.e("Error", "errorMessage = ${errorMessage.isNotEmpty()}")
+            }
         }
     )
 }
 
 @ExperimentalCoilApi
 @Composable
-fun ListContent(items: LazyPagingItems<HomePhoto>) {
-    Log.d("Error", items.loadState.toString())
+fun ListContent(items: LazyPagingItems<HomePhoto>, errorMessage: String) {
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(all = 12.dp),
@@ -111,16 +154,7 @@ fun UnsplashItem(unsplashImage: HomePhoto) {
                 text = buildAnnotatedString {
                     append("Photo by ")
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Black)) {
-                        append(
-                            (
-                                    if (unsplashImage.user_name != null) {
-                                        unsplashImage.user_name
-                                    } else {
-                                        "no user"
-                                    }
-                                    )!!
-
-                        )
+                        append(unsplashImage.user_name ?: "")
                     }
                     append(" on Unsplash")
                 },

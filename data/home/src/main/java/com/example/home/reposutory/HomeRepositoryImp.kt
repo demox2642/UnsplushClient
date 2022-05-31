@@ -1,27 +1,55 @@
 package com.example.home.reposutory
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
+import androidx.paging.*
 import com.example.database.UnsplashDatabase
+import com.example.database.models.UnsplashImage
 import com.example.home.models.HomePhoto
 import com.example.home.paging.PagingConst.PAGE_SIZE
-import com.example.home.paging.SearchPagingSource
 import com.example.home.repository.HomeRepository
 import com.example.home.services.HomeService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-
+@ExperimentalPagingApi
 class HomeRepositoryImp @Inject constructor(
     private val homeService: HomeService,
     private val unsplashDatabase: UnsplashDatabase
 ) : HomeRepository {
+//    override suspend fun getPhotosList(): Flow<PagingData<HomePhoto>> {
+//        return Pager(
+//            config = PagingConfig(pageSize = PAGE_SIZE),
+//            pagingSourceFactory = {
+//                SearchPagingSource(homeService = homeService, unsplashDatabase = unsplashDatabase)
+//            }
+//        ).flow
+//    }
+
     override suspend fun getPhotosList(): Flow<PagingData<HomePhoto>> {
+        val pagingSourceFactory = { unsplashDatabase.unsplashImageDao().getAllImages() }
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE),
-            pagingSourceFactory = {
-                SearchPagingSource(homeService = homeService, unsplashDatabase = unsplashDatabase)
-            }
+            remoteMediator = HomePhotoRemouteMediator(
+                homeService = homeService,
+                unsplashDatabase = unsplashDatabase
+            ),
+            pagingSourceFactory = pagingSourceFactory
         ).flow
+            .map {
+                InsplashPtotoToHomePhoto(it)
+            }
+    }
+
+    private fun InsplashPtotoToHomePhoto(insplashPhoto: PagingData<UnsplashImage>): PagingData<HomePhoto> {
+        return insplashPhoto.map {
+            HomePhoto(
+                id = it.id,
+                likes = it.likes,
+                urls_regular = it.urls.regular,
+                user_name = it.user.username,
+                user_fio = it.user.username,
+                user_img = (it.user.userLinks).toString(),
+                likedByUser = false
+            )
+        }
     }
 }
