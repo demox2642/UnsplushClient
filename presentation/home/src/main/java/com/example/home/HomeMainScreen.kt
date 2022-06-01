@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +39,7 @@ import com.example.home.models.HomePhoto
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
+@OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun HomeMainScreen() {
@@ -46,6 +49,7 @@ fun HomeMainScreen() {
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     val openErrorDialog by viewModel.errorMessageState.collectAsState()
+    val searchText by viewModel.searchText.collectAsState()
 
     viewModel.changeRefreshStatus(searchedImages.loadState.prepend.endOfPaginationReached.not())
     if (searchedImages.loadState.mediator != null) {
@@ -53,9 +57,10 @@ fun HomeMainScreen() {
         searchedImages.loadState.mediator!!.refresh.toString()
         viewModel.postError(searchedImages.loadState.mediator!!.refresh)
     }
+    val defValueText = stringResource(id = R.string.search_text)
 
     Scaffold(
-        topBar = { TopBarSearch() },
+        topBar = { TopBarSearch(defValueText = defValueText, text = searchText, viewModel::search) },
 
         content = {
             SwipeRefresh(

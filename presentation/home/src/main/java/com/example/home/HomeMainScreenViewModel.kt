@@ -8,15 +8,18 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.home.models.HomePhoto
 import com.example.home.usecase.GetPhotosListUserCase
+import com.example.home.usecase.SearchPhotoUserCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeMainScreenViewModel @Inject constructor(
-    private val getPhotosListUserCase: GetPhotosListUserCase
+    private val getPhotosListUserCase: GetPhotosListUserCase,
+    private val searchPhotoUserCase: SearchPhotoUserCase
 ) : ViewModel() {
     private val _photoList = MutableStateFlow<PagingData<HomePhoto>>(PagingData.empty())
     val photoList = _photoList.asStateFlow()
@@ -29,6 +32,11 @@ class HomeMainScreenViewModel @Inject constructor(
 
     private val _errorMessageState = MutableStateFlow(false)
     val errorMessageState = _errorMessageState.asStateFlow()
+
+    private val _searchText = MutableStateFlow("")
+    val searchText = _searchText.asStateFlow()
+
+    private var currentJob: Job? = null
 
     init {
         getPhotosList()
@@ -62,5 +70,27 @@ class HomeMainScreenViewModel @Inject constructor(
 
     fun closeErrorDialog() {
         _errorMessageState.value = false
+    }
+
+    fun search(searchText: String) {
+        _searchText.value = searchText
+        viewModelScope.launch {
+            flowSearch(_searchText)
+        }
+    }
+
+    suspend fun flowSearch(searchText: Flow<String>) {
+        val text = _searchText.value
+
+        currentJob = searchText.debounce(500)
+            .mapLatest {
+
+                if (it.length == text.length) {
+                    Log.e("Home Main VM ", "search Start")
+                    searchPhotoUserCase.searchPhotos(it)
+                }
+            }
+            .flowOn(Dispatchers.IO)
+            .launchIn(viewModelScope)
     }
 }

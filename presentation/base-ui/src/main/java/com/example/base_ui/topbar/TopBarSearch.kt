@@ -18,10 +18,13 @@ import com.example.base_ui.R
 import com.example.base_ui.theme.AppTheme
 
 @Composable
-fun TopBarSearch() {
-    val defValueText = stringResource(id = R.string.search_text)
+fun TopBarSearch(
+    defValueText: String,
+    text: String,
+    onSearchTextChanged: (String) -> Unit
+) {
+
     var defValue by remember { mutableStateOf(defValueText) }
-    var text by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxWidth().background(AppTheme.colors.systemTopBarColors)) {
         OutlinedTextField(
@@ -36,20 +39,25 @@ fun TopBarSearch() {
             textStyle = AppTheme.typography.link,
             singleLine = true,
             label = {
-                Text(
-                    defValue,
-                    color = AppTheme.colors.systemTextPrimary,
-                    style = AppTheme.typography.link
-                )
+                if (text.isEmpty()) {
+                    Text(
+                        defValue,
+                        color = AppTheme.colors.systemTextPrimary,
+                        style = AppTheme.typography.link
+                    )
+                }
             },
             maxLines = 1,
             value = text,
-            onValueChange = { text = it },
+            onValueChange = {
+                onSearchTextChanged(it)
+            },
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp)
                 .onFocusEvent {
+                    it.isFocused
                     if (it.isFocused) {
                         defValue = ""
                     }
@@ -63,7 +71,7 @@ fun TopBarSearch() {
             trailingIcon = {
                 ClearIcon(
                     visible = text.isNotEmpty(),
-                    onClick = { text = "" }
+                    onClick = { onSearchTextChanged("") }
                 )
             }
         )

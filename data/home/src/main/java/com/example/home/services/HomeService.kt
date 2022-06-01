@@ -12,4 +12,12 @@ interface HomeService {
         @Query("per_page") perPage: Int?,
         @Query("order_by") orderBy: String?
     ): List<Photo>
+
+    @GET("/search/photos")
+    suspend fun searchImages(
+        @Query("query") query: String,
+        @Query("page") page: Int?,
+        @Query("per_page") perPage: Int,
+        @Query("lang") lang: String?
+    ): List<Photo>
 }

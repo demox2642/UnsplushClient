@@ -1,6 +1,5 @@
-package com.example.home.reposutory
+package com.example.home.paging
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -13,7 +12,6 @@ import com.example.database.models.Urls
 import com.example.database.models.User
 import com.example.database.models.UserLinks
 import com.example.home.models.Order
-import com.example.home.paging.PagingConst
 import com.example.home.services.HomeService
 
 @ExperimentalPagingApi
@@ -54,7 +52,6 @@ class HomePhotoRemouteMediator(
             }
 
             val response = homeService.getPhotoList(page = currentPage, perPage = PagingConst.PAGE_SIZE, orderBy = Order.POPULAR.name)
-            Log.e("HomePagingMediator", "response = $response")
             val endOfPaginationReached = response.isEmpty()
 
             val prevPage = if (currentPage == 1) null else currentPage - 1

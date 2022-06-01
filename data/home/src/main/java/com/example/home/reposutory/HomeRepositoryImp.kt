@@ -4,7 +4,9 @@ import androidx.paging.*
 import com.example.database.UnsplashDatabase
 import com.example.database.models.UnsplashImage
 import com.example.home.models.HomePhoto
+import com.example.home.paging.HomePhotoRemouteMediator
 import com.example.home.paging.PagingConst.PAGE_SIZE
+import com.example.home.paging.SearchPhotoRemouteMediator
 import com.example.home.repository.HomeRepository
 import com.example.home.services.HomeService
 import kotlinx.coroutines.flow.Flow
@@ -35,11 +37,27 @@ class HomeRepositoryImp @Inject constructor(
             pagingSourceFactory = pagingSourceFactory
         ).flow
             .map {
-                InsplashPtotoToHomePhoto(it)
+                UnsplashPtotoToHomePhoto(it)
             }
     }
 
-    private fun InsplashPtotoToHomePhoto(insplashPhoto: PagingData<UnsplashImage>): PagingData<HomePhoto> {
+    override suspend fun searchPhotos(searchText: String): Flow<PagingData<HomePhoto>> {
+        val pagingSourceFactory = { unsplashDatabase.unsplashImageDao().getAllImages() }
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE),
+            remoteMediator = SearchPhotoRemouteMediator(
+                homeService = homeService,
+                unsplashDatabase = unsplashDatabase,
+                searchText = searchText
+            ),
+            pagingSourceFactory = pagingSourceFactory
+        ).flow
+            .map {
+                UnsplashPtotoToHomePhoto(it)
+            }
+    }
+
+    private fun UnsplashPtotoToHomePhoto(insplashPhoto: PagingData<UnsplashImage>): PagingData<HomePhoto> {
         return insplashPhoto.map {
             HomePhoto(
                 id = it.id,
