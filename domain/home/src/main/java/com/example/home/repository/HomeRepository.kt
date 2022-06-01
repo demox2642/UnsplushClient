@@ -8,4 +8,5 @@ interface HomeRepository {
 
     suspend fun getPhotosList(): Flow<PagingData<HomePhoto>>
     suspend fun searchPhotos(searchText: String): Flow<PagingData<HomePhoto>>
+    suspend fun getPhotoInfo(photoId: String): HomePhoto
 }

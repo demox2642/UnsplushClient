@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.base_ui.managers.ConnectionManager
 import com.example.home.models.HomePhoto
 import com.example.home.usecase.GetPhotosListUserCase
 import com.example.home.usecase.SearchPhotoUserCase
@@ -21,6 +22,10 @@ class HomeMainScreenViewModel @Inject constructor(
     private val getPhotosListUserCase: GetPhotosListUserCase,
     private val searchPhotoUserCase: SearchPhotoUserCase
 ) : ViewModel() {
+
+    @Inject
+    lateinit var connectionManager: ConnectionManager
+
     private val _photoList = MutableStateFlow<PagingData<HomePhoto>>(PagingData.empty())
     val photoList = _photoList.asStateFlow()
 
@@ -82,12 +87,18 @@ class HomeMainScreenViewModel @Inject constructor(
     suspend fun flowSearch(searchText: Flow<String>) {
         val text = _searchText.value
 
-        currentJob = searchText.debounce(500)
+        currentJob = searchText.debounce(700)
             .mapLatest {
 
                 if (it.length == text.length) {
                     Log.e("Home Main VM ", "search Start")
                     searchPhotoUserCase.searchPhotos(it)
+                        .cachedIn(viewModelScope)
+                        .collect {
+
+                            _photoList.value = it
+                            Log.e("Home Main VM ", "search Start value = $_photoList.value")
+                        }
                 }
             }
             .flowOn(Dispatchers.IO)

@@ -57,6 +57,19 @@ class HomeRepositoryImp @Inject constructor(
             }
     }
 
+    override suspend fun getPhotoInfo(photoId: String): HomePhoto {
+        val response = homeService.getPhotoInfo(photoId)
+        return  HomePhoto(
+            id = response.id!!,
+            likes = response.likes,
+            urls_regular = response.urls?.regular,
+            user_name = response.user?.username,
+            user_fio = response.user?.username,
+            user_img = (response.user?.portfolioUrl).toString(),
+            likedByUser = false
+        )
+    }
+
     private fun UnsplashPtotoToHomePhoto(insplashPhoto: PagingData<UnsplashImage>): PagingData<HomePhoto> {
         return insplashPhoto.map {
             HomePhoto(

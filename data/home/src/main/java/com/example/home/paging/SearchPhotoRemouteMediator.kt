@@ -1,5 +1,6 @@
 package com.example.home.paging
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -53,7 +54,7 @@ class SearchPhotoRemouteMediator(
                 lang = "ru"
             }
             val response = homeService.searchImages(query = searchText, page = currentPage, perPage = PagingConst.PAGE_SIZE, lang = lang)
-            val endOfPaginationReached = response.isEmpty()
+            val endOfPaginationReached = response.images.isEmpty()
 
             val prevPage = if (currentPage == 1) null else currentPage - 1
             val nextPage = if (endOfPaginationReached) null else currentPage + 1
@@ -63,20 +64,33 @@ class SearchPhotoRemouteMediator(
 //                    unsplashImageDao.deleteAllImages()
 //                    unsplashRemoteKeysDao.deleteAllRemoteKeys()
 //                }
-                val keys = response.map { unsplashImage ->
+                val keys = response.images.map { unsplashImage ->
                     UnsplashRemoteKeys(
                         id = unsplashImage.id!!,
                         prevPage = prevPage,
                         nextPage = nextPage
                     )
                 }
+                Log.e("SearchPhotoRemoute", "lang = $lang")
                 unsplashRemoteKeysDao.addAllRemoteKeys(remoteKeys = keys)
                 unsplashImageDao.addImages(
-                    images = response.map {
+                    images = response.images.map {
+
                         UnsplashImage(
                             id = it.id!!,
                             urls = Urls(it.urls!!.regular!!),
                             likes = it.likes ?: 0,
+                            description = if (refactorDescription(it.description) != null && refactorDescription(it.description) == false) {
+                                it.description
+                            } else {
+                                null
+                            },
+                            description_ru = if (refactorDescription(it.description) != null && refactorDescription(it.description) == true) {
+                                Log.e("SearchPhotoRemoute", "description_ru $it")
+                                it.description
+                            } else {
+                                null
+                            },
                             user = User(
                                 userLinks = UserLinks(html = it.user?.portfolioUrl ?: ""),
                                 username = it.user?.username ?: "user"
@@ -117,5 +131,14 @@ class SearchPhotoRemouteMediator(
             ?.let { unsplashImage ->
                 unsplashRemoteKeysDao.getRemoteKeys(id = unsplashImage.id)
             }
+    }
+
+    private fun refactorDescription(desc: String?): Boolean? {
+        val ruLang = Regex("[А-я]+")
+        return if (desc != null) {
+            ruLang.matches(desc)
+        } else {
+            null
+        }
     }
 }

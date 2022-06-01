@@ -1,17 +1,16 @@
 package com.example.home
 
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -26,23 +25,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.example.HomeScreens
 import com.example.base_ui.dialogs.CustomErrorDialog
 import com.example.base_ui.topbar.TopBarSearch
 import com.example.home.models.HomePhoto
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
-@OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun HomeMainScreen() {
+fun HomeMainScreen(navController: NavHostController) {
+
     val viewModel = hiltViewModel< HomeMainScreenViewModel>()
     val searchedImages = viewModel.photoList.collectAsLazyPagingItems()
     val swipeRefreshState by viewModel.refreshState.collectAsState()
@@ -69,7 +69,9 @@ fun HomeMainScreen() {
                 onRefresh = { viewModel.getPhotosList() }
 
             ) {
-                ListContent(items = searchedImages, errorMessage)
+                ListContent(items = searchedImages) {
+                    navController.navigate(HomeScreens.DetailPhoto.route + "/$it")
+                }
 
                 if (openErrorDialog) {
                     Column(
@@ -94,7 +96,7 @@ fun HomeMainScreen() {
 
 @ExperimentalCoilApi
 @Composable
-fun ListContent(items: LazyPagingItems<HomePhoto>, errorMessage: String) {
+fun ListContent(items: LazyPagingItems<HomePhoto>, photoId: (String) -> Unit) {
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -107,14 +109,14 @@ fun ListContent(items: LazyPagingItems<HomePhoto>, errorMessage: String) {
                 unsplashImage.id
             }
         ) { unsplashImage ->
-            unsplashImage?.let { UnsplashItem(unsplashImage = it) }
+            unsplashImage?.let { UnsplashItem(unsplashImage = it, photoId) }
         }
     }
 }
 
 @ExperimentalCoilApi
 @Composable
-fun UnsplashItem(unsplashImage: HomePhoto) {
+fun UnsplashItem(unsplashImage: HomePhoto, photoId: (String) -> Unit) {
     val painter = rememberImagePainter(data = unsplashImage.urls_regular) {
         crossfade(durationMillis = 1000)
         error(R.drawable.ic_placeholder)
@@ -124,11 +126,12 @@ fun UnsplashItem(unsplashImage: HomePhoto) {
     Box(
         modifier = Modifier
             .clickable {
-                val browserIntent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("https://unsplash.com/@${unsplashImage.user_name}?utm_source=DemoApp&utm_medium=referral")
-                )
-                ContextCompat.startActivity(context, browserIntent, null)
+                photoId(unsplashImage.id)
+//                val browserIntent = Intent(
+//                    Intent.ACTION_VIEW,
+//                    Uri.parse("https://unsplash.com/@${unsplashImage.user_name}?utm_source=DemoApp&utm_medium=referral")
+//                )
+//                ContextCompat.startActivity(context, browserIntent, null)
             }
             .height(300.dp)
             .fillMaxWidth(),
@@ -171,7 +174,8 @@ fun UnsplashItem(unsplashImage: HomePhoto) {
             LikeCounter(
                 modifier = Modifier.weight(3f),
                 painter = painterResource(id = R.drawable.ic_heart),
-                likes = "${unsplashImage.likes}"
+                likes = "${unsplashImage.likes}",
+                userLikeIt = unsplashImage.likedByUser!!
             )
         }
     }
@@ -181,7 +185,8 @@ fun UnsplashItem(unsplashImage: HomePhoto) {
 fun LikeCounter(
     modifier: Modifier,
     painter: Painter,
-    likes: String
+    likes: String,
+    userLikeIt: Boolean
 ) {
     Row(
         modifier = modifier.fillMaxSize(),
@@ -191,7 +196,11 @@ fun LikeCounter(
         Icon(
             painter = painter,
             contentDescription = "Heart Icon",
-            tint = Color.Red
+            tint = if (userLikeIt) {
+                Color.Red
+            } else {
+                Color.DarkGray
+            }
         )
         Divider(modifier = Modifier.width(6.dp))
         Text(

@@ -11,6 +11,8 @@ import kotlinx.serialization.Serializable
 data class UnsplashImage(
     @PrimaryKey(autoGenerate = false)
     val id: String,
+    val description: String?,
+    val description_ru: String?,
     @Embedded
     val urls: Urls,
     val likes: Int,

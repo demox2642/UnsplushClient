@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.base_ui.theme.AppTheme
+import com.example.homeScreens
 import com.example.onboarding.OnboardingScreens
 import com.example.onboarding.onboardingScreens
 
@@ -57,7 +58,8 @@ fun UnsplashMainScreen() {
                 }
 
             ) {
-                mainScreens()
+                mainScreens(navController)
+                homeScreens(navController)
                 onboardingScreens()
             }
         }

@@ -2,8 +2,6 @@ package com.example.unsplushdiplom.ui
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -22,8 +20,8 @@ sealed class MainScreen(
     object Profile : MainScreen("profile", R.drawable.ic_menu_profile, R.string.menu_profile)
 }
 
-fun NavGraphBuilder.mainScreens() {
-    composable(MainScreen.Home.route) { HomeMainScreen() }
-    composable(MainScreen.Collections.route) { CollectionsMainScreen() }
-    composable(MainScreen.Profile.route) { ProfileMainScreen() }
+fun NavGraphBuilder.mainScreens(navController: NavHostController) {
+    composable(MainScreen.Home.route) { HomeMainScreen(navController) }
+    composable(MainScreen.Collections.route) { CollectionsMainScreen(navController) }
+    composable(MainScreen.Profile.route) { ProfileMainScreen(navController) }
 }

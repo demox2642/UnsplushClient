@@ -76,6 +76,8 @@ class HomePhotoRemouteMediator(
                             id = it.id!!,
                             urls = Urls(it.urls!!.regular!!),
                             likes = it.likes ?: 0,
+                            description = it.description,
+                            description_ru = null,
                             user = User(
                                 userLinks = UserLinks(html = it.user?.portfolioUrl ?: ""),
                                 username = it.user?.username ?: "user"
