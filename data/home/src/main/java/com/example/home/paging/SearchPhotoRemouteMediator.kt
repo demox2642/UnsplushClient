@@ -72,6 +72,7 @@ class SearchPhotoRemouteMediator(
                     )
                 }
                 Log.e("SearchPhotoRemoute", "lang = $lang")
+                Log.e("SearchPhotoRemoute", "response = $response")
                 unsplashRemoteKeysDao.addAllRemoteKeys(remoteKeys = keys)
                 unsplashImageDao.addImages(
                     images = response.images.map {
@@ -101,6 +102,7 @@ class SearchPhotoRemouteMediator(
             }
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (e: Exception) {
+            Log.e("SearchPhotoRemoute", "Error $e")
             return MediatorResult.Error(e)
         }
     }

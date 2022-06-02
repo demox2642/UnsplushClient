@@ -1,5 +1,6 @@
 package com.example.home.reposutory
 
+import android.util.Log
 import androidx.paging.*
 import com.example.database.UnsplashDatabase
 import com.example.database.models.UnsplashImage
@@ -37,12 +38,14 @@ class HomeRepositoryImp @Inject constructor(
             pagingSourceFactory = pagingSourceFactory
         ).flow
             .map {
-                UnsplashPtotoToHomePhoto(it)
+                UnsplashPhotoToHomePhoto(it)
             }
     }
 
     override suspend fun searchPhotos(searchText: String): Flow<PagingData<HomePhoto>> {
-        val pagingSourceFactory = { unsplashDatabase.unsplashImageDao().getAllImages() }
+        val pagingSourceFactory = {
+            unsplashDatabase.unsplashImageDao().getAllImages()
+        }
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE),
             remoteMediator = SearchPhotoRemouteMediator(
@@ -53,13 +56,13 @@ class HomeRepositoryImp @Inject constructor(
             pagingSourceFactory = pagingSourceFactory
         ).flow
             .map {
-                UnsplashPtotoToHomePhoto(it)
+                UnsplashPhotoToHomePhoto(it)
             }
     }
 
     override suspend fun getPhotoInfo(photoId: String): HomePhoto {
         val response = homeService.getPhotoInfo(photoId)
-        return  HomePhoto(
+        return HomePhoto(
             id = response.id!!,
             likes = response.likes,
             urls_regular = response.urls?.regular,
@@ -70,8 +73,9 @@ class HomeRepositoryImp @Inject constructor(
         )
     }
 
-    private fun UnsplashPtotoToHomePhoto(insplashPhoto: PagingData<UnsplashImage>): PagingData<HomePhoto> {
+    private fun UnsplashPhotoToHomePhoto(insplashPhoto: PagingData<UnsplashImage>): PagingData<HomePhoto> {
         return insplashPhoto.map {
+            Log.e("HomeRepositoryImp","UnsplashPhotoToHomePhoto $it")
             HomePhoto(
                 id = it.id,
                 likes = it.likes,

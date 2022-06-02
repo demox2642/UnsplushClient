@@ -66,7 +66,7 @@ class HomeMainScreenViewModel @Inject constructor(
         val networkError = "Unable to resolve host \"api.unsplash.com\""
         if (loadState is LoadState.Error) {
             _errorMessage.value = loadState.error.localizedMessage.toString()
-            Log.e("Home Main VM ", "postError${_errorMessage.value.substringBefore(':') }")
+            Log.e("HomeMainVM ", "postError${_errorMessage.value.substringBefore(':') }")
             if (_errorMessage.value.substringBefore(':') != networkError) {
                 _errorMessageState.value = true
             }
@@ -86,18 +86,18 @@ class HomeMainScreenViewModel @Inject constructor(
 
     suspend fun flowSearch(searchText: Flow<String>) {
         val text = _searchText.value
-
+        _photoList.value = PagingData.empty()
         currentJob = searchText.debounce(700)
             .mapLatest {
 
                 if (it.length == text.length) {
-                    Log.e("Home Main VM ", "search Start")
+                    Log.e("HomeMainVM ", "search Start it = $it, text = $text")
                     searchPhotoUserCase.searchPhotos(it)
                         .cachedIn(viewModelScope)
                         .collect {
 
                             _photoList.value = it
-                            Log.e("Home Main VM ", "search Start value = $_photoList.value")
+                            Log.e("HomeMainVM ", "search Start value = ${_photoList.value}")
                         }
                 }
             }

@@ -27,6 +27,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -53,7 +54,8 @@ fun HomeMainScreen(navController: NavHostController) {
 
     viewModel.changeRefreshStatus(searchedImages.loadState.prepend.endOfPaginationReached.not())
     if (searchedImages.loadState.mediator != null) {
-        viewModel.changeRefreshStatus(searchedImages.loadState.mediator!!.prepend.endOfPaginationReached)
+
+        viewModel.changeRefreshStatus(searchedImages.loadState.mediator!!.refresh.equals(LoadState.Loading))
         searchedImages.loadState.mediator!!.refresh.toString()
         viewModel.postError(searchedImages.loadState.mediator!!.refresh)
     }
