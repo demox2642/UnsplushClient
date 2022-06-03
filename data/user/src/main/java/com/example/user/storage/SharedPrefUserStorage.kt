@@ -6,7 +6,14 @@ import com.example.user.repository.UserRepositoryConst
 
 class SharedPrefUserStorage(private val context: Context) : UserStorage {
 
-    val sharedPreferences = context.getSharedPreferences(UserRepositoryConst.SHAREDPRERFERENCE, Context.MODE_PRIVATE)
+    private val sharedPreferences = context.getSharedPreferences(UserRepositoryConst.SHAREDPRERFERENCE, Context.MODE_PRIVATE)
+    override fun saveAuthState(state: String) {
+        sharedPreferences.edit().putString(UserRepositoryConst.AUTHSTATE, state).apply()
+    }
+
+    override fun getAuthState(): String {
+        return sharedPreferences.getString(UserRepositoryConst.AUTHSTATE, "onboard") ?: "onboard"
+    }
 
     override fun saveState() {
 

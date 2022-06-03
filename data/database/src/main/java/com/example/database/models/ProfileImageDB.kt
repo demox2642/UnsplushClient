@@ -13,7 +13,7 @@ import com.example.database.contracts.ProfileImageDBContracts
 data class ProfileImageDB(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = ProfileImageDBContracts.Colums.ID)
-    var id: String,
+    var id_prof_im: String,
     @ColumnInfo(name = ProfileImageDBContracts.Colums.SMALL)
     var small: String? = null,
     @ColumnInfo(name = ProfileImageDBContracts.Colums.MEDIUM)

@@ -3,6 +3,7 @@ package com.example.home.services
 import com.example.home.models.Photo
 import com.example.home.models.SearchResult
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface HomeService {
@@ -20,10 +21,10 @@ interface HomeService {
         @Query("page") page: Int?,
         @Query("per_page") perPage: Int,
         @Query("lang") lang: String?
-    ): SearchResult //List<Photo>
+    ): SearchResult // List<Photo>
 
-    @GET("photos/:id")
+    @GET("photos/{id}")
     suspend fun getPhotoInfo(
-        @Query("id") id: String,
-    ):Photo
+        @Path("id") id: String,
+    ): Photo
 }

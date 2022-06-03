@@ -2,6 +2,7 @@ package com.example.unsplushdiplom.ui
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.example.user.usecase.auth.GetAuthStateUserCase
 import com.example.user.usecase.auth.GetTokenUserCase
 import com.example.user.usecase.onboarding.GetOnboardingStateUserCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,12 +12,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UnsplashMainViewModel @Inject constructor(
-    private val getOnboardingState: GetOnboardingStateUserCase,
+    private val getAuthStateUserCase: GetAuthStateUserCase,
     private val getTokenUserCase: GetTokenUserCase
 
 ) : ViewModel() {
 
-    private val _onboardingState = MutableStateFlow(false)
+    private val _onboardingState = MutableStateFlow("onboard")
     val onboardingState = _onboardingState.asStateFlow()
 
     private val _haveToken = MutableStateFlow(false)
@@ -28,7 +29,7 @@ class UnsplashMainViewModel @Inject constructor(
     }
 
     private fun getOnboardingState() {
-        val state = getOnboardingState.getOnboardingState()
+        val state = getAuthStateUserCase.getAuthStateUserCase()
         Log.e("UnsplashMainViewModel", "state=$state")
         _onboardingState.value = state
     }

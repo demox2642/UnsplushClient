@@ -2,10 +2,13 @@ package com.example.home
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -13,9 +16,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -71,7 +76,7 @@ fun HomeMainScreen(navController: NavHostController) {
                 onRefresh = { viewModel.getPhotosList() }
 
             ) {
-                ListContent(items = searchedImages) {
+                ListContent(list = searchedImages) {
                     navController.navigate(HomeScreens.DetailPhoto.route + "/$it")
                 }
 
@@ -89,29 +94,44 @@ fun HomeMainScreen(navController: NavHostController) {
                         )
                     }
                 }
-
-                Log.e("Error", "errorMessage = ${errorMessage.isNotEmpty()}")
             }
         }
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @ExperimentalCoilApi
 @Composable
-fun ListContent(items: LazyPagingItems<HomePhoto>, photoId: (String) -> Unit) {
+fun ListContent(list: LazyPagingItems<HomePhoto>, photoId: (String) -> Unit) {
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(all = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+//    LazyColumn(
+//        modifier = Modifier.fillMaxSize(),
+//        contentPadding = PaddingValues(all = 12.dp),
+//        verticalArrangement = Arrangement.spacedBy(12.dp)
+//    ) {
+//        items(
+//            items = items,
+//            key = { unsplashImage ->
+//                unsplashImage.id
+//            }
+//        ) { unsplashImage ->
+//            unsplashImage?.let { UnsplashItem(unsplashImage = it, photoId) }
+//        }
+//    }
+
+    val configuration = LocalConfiguration.current
+
+    val dimensions = if (configuration.screenWidthDp <= 400) 2 else 3
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(dimensions),
+        modifier = Modifier.padding(4.dp)
     ) {
-        items(
-            items = items,
-            key = { unsplashImage ->
-                unsplashImage.id
+        items(list.itemCount) { index ->
+            list[index]?.let {
+                UnsplashItem(unsplashImage = it, photoId)
             }
-        ) { unsplashImage ->
-            unsplashImage?.let { UnsplashItem(unsplashImage = it, photoId) }
+            //     unsplashImage?.let {}
         }
     }
 }
@@ -119,8 +139,9 @@ fun ListContent(items: LazyPagingItems<HomePhoto>, photoId: (String) -> Unit) {
 @ExperimentalCoilApi
 @Composable
 fun UnsplashItem(unsplashImage: HomePhoto, photoId: (String) -> Unit) {
+    Log.e("HomeScreen", "HomePhoto = $unsplashImage")
     val painter = rememberImagePainter(data = unsplashImage.urls_regular) {
-        crossfade(durationMillis = 1000)
+        crossfade(durationMillis = 100)
         error(R.drawable.ic_placeholder)
         placeholder(R.drawable.ic_placeholder)
     }
@@ -160,6 +181,15 @@ fun UnsplashItem(unsplashImage: HomePhoto, photoId: (String) -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            Image(
+                painter = rememberImagePainter(data = unsplashImage.user_img),
+                contentDescription = "user image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(25.dp)
+                    .clip(CircleShape)
+            )
+            Spacer(modifier = Modifier.width(15.dp))
             Text(
                 text = buildAnnotatedString {
                     append("Photo by ")
@@ -201,7 +231,7 @@ fun LikeCounter(
             tint = if (userLikeIt) {
                 Color.Red
             } else {
-                Color.DarkGray
+                Color.Gray
             }
         )
         Divider(modifier = Modifier.width(6.dp))

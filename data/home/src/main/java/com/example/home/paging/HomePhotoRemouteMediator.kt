@@ -6,11 +6,7 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.example.database.UnsplashDatabase
-import com.example.database.models.UnsplashImage
-import com.example.database.models.UnsplashRemoteKeys
-import com.example.database.models.Urls
-import com.example.database.models.User
-import com.example.database.models.UserLinks
+import com.example.database.models.*
 import com.example.home.models.Order
 import com.example.home.services.HomeService
 
@@ -80,7 +76,14 @@ class HomePhotoRemouteMediator(
                             description_ru = null,
                             user = User(
                                 userLinks = UserLinks(html = it.user?.portfolioUrl ?: ""),
-                                username = it.user?.username ?: "user"
+                                username = it.user?.username ?: "user",
+                                profileImage = ProfileImageDB(
+                                    id_prof_im = it.user?.id!!,
+                                    small = it.user!!.profileImage?.small,
+                                    medium = it.user!!.profileImage?.medium,
+                                    large = it.user!!.profileImage?.large,
+                                )
+
                             )
                         )
                     }

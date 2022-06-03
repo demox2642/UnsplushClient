@@ -18,7 +18,7 @@ class SearchPhotoRemouteMediator(
 ) : RemoteMediator<Int, UnsplashImage>() {
 
     private val unsplashImageDao = unsplashDatabase.unsplashImageDao()
-    private val unsplashRemoteKeysDao = unsplashDatabase.unsplashRemoteKeysDao()
+    private val unsplashSearchImageKeysDao = unsplashDatabase.unsplashSearchImageKeysDao()
 
     override suspend fun load(
         loadType: LoadType,
@@ -65,40 +65,51 @@ class SearchPhotoRemouteMediator(
 //                    unsplashRemoteKeysDao.deleteAllRemoteKeys()
 //                }
                 val keys = response.images.map { unsplashImage ->
-                    UnsplashRemoteKeys(
+                    UnsplashSearchImageKeys(
                         id = unsplashImage.id!!,
                         prevPage = prevPage,
                         nextPage = nextPage
                     )
                 }
                 Log.e("SearchPhotoRemoute", "lang = $lang")
-                Log.e("SearchPhotoRemoute", "response = $response")
-                unsplashRemoteKeysDao.addAllRemoteKeys(remoteKeys = keys)
-                unsplashImageDao.addImages(
-                    images = response.images.map {
+                // Log.e("SearchPhotoRemoute", "response = $response")
+                unsplashSearchImageKeysDao.addAllRemoteKeys(remoteKeys = keys)
+                try {
 
-                        UnsplashImage(
-                            id = it.id!!,
-                            urls = Urls(it.urls!!.regular!!),
-                            likes = it.likes ?: 0,
-                            description = if (refactorDescription(it.description) != null && refactorDescription(it.description) == false) {
-                                it.description
-                            } else {
-                                null
-                            },
-                            description_ru = if (refactorDescription(it.description) != null && refactorDescription(it.description) == true) {
-                                Log.e("SearchPhotoRemoute", "description_ru $it")
-                                it.description
-                            } else {
-                                null
-                            },
-                            user = User(
-                                userLinks = UserLinks(html = it.user?.portfolioUrl ?: ""),
-                                username = it.user?.username ?: "user"
+                    unsplashImageDao.addImages(
+                        images = response.images.map {
+                            Log.e("SearchPhotoRemoute", "response = ${it.description}")
+                            UnsplashImage(
+                                id = it.id!!,
+                                urls = Urls(it.urls!!.regular!!),
+                                likes = it.likes ?: 0,
+                                description = if (refactorDescription(it.description) != null && refactorDescription(it.description) == false) {
+                                    it.description
+                                } else {
+                                    null
+                                },
+                                description_ru = if (refactorDescription(it.description) != null && refactorDescription(it.description) == true) {
+                                    Log.e("SearchPhotoRemoute", "description_ru $it")
+                                    it.description
+                                } else {
+                                    null
+                                },
+                                user = User(
+                                    userLinks = UserLinks(html = it.user?.portfolioUrl ?: ""),
+                                    username = it.user?.username ?: "user",
+                                    profileImage = ProfileImageDB(
+                                        id_prof_im = it.user?.id!!,
+                                        small = it.user!!.profileImage?.small,
+                                        medium = it.user!!.profileImage?.medium,
+                                        large = it.user!!.profileImage?.large,
+                                    )
+                                )
                             )
-                        )
-                    }
-                )
+                        }
+                    )
+                } catch (e: Exception) {
+                    Log.e("SearchPhotoRemoute", "ERROR insert key")
+                }
             }
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (e: Exception) {
@@ -109,29 +120,29 @@ class SearchPhotoRemouteMediator(
 
     private suspend fun getRemoteKeyClosestToCurrentPosition(
         state: PagingState<Int, UnsplashImage>
-    ): UnsplashRemoteKeys? {
+    ): UnsplashSearchImageKeys? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { id ->
-                unsplashRemoteKeysDao.getRemoteKeys(id = id)
+                unsplashSearchImageKeysDao.getRemoteKeys(id = id)
             }
         }
     }
 
     private suspend fun getRemoteKeyForFirstItem(
         state: PagingState<Int, UnsplashImage>
-    ): UnsplashRemoteKeys? {
+    ): UnsplashSearchImageKeys? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
             ?.let { unsplashImage ->
-                unsplashRemoteKeysDao.getRemoteKeys(id = unsplashImage.id)
+                unsplashSearchImageKeysDao.getRemoteKeys(id = unsplashImage.id)
             }
     }
 
     private suspend fun getRemoteKeyForLastItem(
         state: PagingState<Int, UnsplashImage>
-    ): UnsplashRemoteKeys? {
+    ): UnsplashSearchImageKeys? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { unsplashImage ->
-                unsplashRemoteKeysDao.getRemoteKeys(id = unsplashImage.id)
+                unsplashSearchImageKeysDao.getRemoteKeys(id = unsplashImage.id)
             }
     }
 

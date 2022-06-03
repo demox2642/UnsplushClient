@@ -38,15 +38,19 @@ class HomeRepositoryImp @Inject constructor(
             pagingSourceFactory = pagingSourceFactory
         ).flow
             .map {
+                it.map {
+                    Log.e("HomeRepositoryImp", "it = $it")
+                }
+
                 UnsplashPhotoToHomePhoto(it)
             }
     }
 
     override suspend fun searchPhotos(searchText: String): Flow<PagingData<HomePhoto>> {
         val pagingSourceFactory = {
-            unsplashDatabase.unsplashImageDao().getAllImages()
+            unsplashDatabase.unsplashImageDao().searchImages(searchText)
         }
-        return Pager(
+        val test = Pager(
             config = PagingConfig(pageSize = PAGE_SIZE),
             remoteMediator = SearchPhotoRemouteMediator(
                 homeService = homeService,
@@ -58,6 +62,13 @@ class HomeRepositoryImp @Inject constructor(
             .map {
                 UnsplashPhotoToHomePhoto(it)
             }
+        test.map {
+            it.map {
+                Log.e("HomeRepositoryImp", "it = $it")
+            }
+        }
+
+        return test
     }
 
     override suspend fun getPhotoInfo(photoId: String): HomePhoto {
@@ -75,14 +86,13 @@ class HomeRepositoryImp @Inject constructor(
 
     private fun UnsplashPhotoToHomePhoto(insplashPhoto: PagingData<UnsplashImage>): PagingData<HomePhoto> {
         return insplashPhoto.map {
-            Log.e("HomeRepositoryImp","UnsplashPhotoToHomePhoto $it")
             HomePhoto(
                 id = it.id,
                 likes = it.likes,
                 urls_regular = it.urls.regular,
                 user_name = it.user.username,
                 user_fio = it.user.username,
-                user_img = (it.user.userLinks).toString(),
+                user_img = it.user.profileImage!!.large,
                 likedByUser = false
             )
         }

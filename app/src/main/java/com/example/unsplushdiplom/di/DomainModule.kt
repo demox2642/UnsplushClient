@@ -8,6 +8,7 @@ import com.example.user.repository.AuthRepository
 import com.example.user.repository.AuthRepositoryImpl
 import com.example.user.repository.UserRepository
 import com.example.user.usecase.auth.AuthStateUserCase
+import com.example.user.usecase.auth.GetAuthStateUserCase
 import com.example.user.usecase.auth.GetTokenUserCase
 import com.example.user.usecase.auth.SaveTokenUserCase
 import com.example.user.usecase.onboarding.GetOnboardingStateUserCase
@@ -39,6 +40,11 @@ class DomainModule {
     @Provides
     fun provideGetTokenUserCase(userRepository: UserRepository): GetTokenUserCase {
         return GetTokenUserCase(userRepository = userRepository)
+    }
+
+    @Provides
+    fun provideGetAuthStateUserCase(userRepository: UserRepository): GetAuthStateUserCase {
+        return GetAuthStateUserCase(userRepository = userRepository)
     }
 
     @Provides

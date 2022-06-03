@@ -6,7 +6,7 @@ object ProfileImageDBContracts {
 
     object Colums {
 
-        const val ID = "id"
+        const val ID = "id_prof_im"
         const val SMALL = "small"
         const val MEDIUM = "medium"
         const val LARGE = "large"

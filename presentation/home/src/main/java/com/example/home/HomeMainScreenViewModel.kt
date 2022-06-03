@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.example.base_ui.managers.ConnectionManager
 import com.example.home.models.HomePhoto
 import com.example.home.usecase.GetPhotosListUserCase
@@ -87,7 +88,7 @@ class HomeMainScreenViewModel @Inject constructor(
     suspend fun flowSearch(searchText: Flow<String>) {
         val text = _searchText.value
         _photoList.value = PagingData.empty()
-        currentJob = searchText.debounce(700)
+        currentJob = searchText.debounce(1000)
             .mapLatest {
 
                 if (it.length == text.length) {
@@ -95,9 +96,9 @@ class HomeMainScreenViewModel @Inject constructor(
                     searchPhotoUserCase.searchPhotos(it)
                         .cachedIn(viewModelScope)
                         .collect {
-
+                            it.map {
+                                Log.e("HomeMainVM ", "search Start value = $it") }
                             _photoList.value = it
-                            Log.e("HomeMainVM ", "search Start value = ${_photoList.value}")
                         }
                 }
             }

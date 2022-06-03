@@ -1,5 +1,6 @@
 package com.example.unsplushdiplom.ui
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.defaultMinSize
@@ -24,6 +25,7 @@ import com.example.homeScreens
 import com.example.onboarding.OnboardingScreens
 import com.example.onboarding.onboardingScreens
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun UnsplashMainScreen() {
 
@@ -33,7 +35,7 @@ fun UnsplashMainScreen() {
     val onboardingState = viewModel.onboardingState.collectAsState()
     val haveToken = viewModel.haveToken.collectAsState()
     Log.e("UnsplashMainScreen", "onboardingState = $onboardingState  haveToken = $haveToken")
-
+    Log.e("UnsplashMainScreen", "state = ${onboardingState.value}")
     Scaffold(
         bottomBar = { BottomNav(navController) }
     ) {
@@ -44,17 +46,24 @@ fun UnsplashMainScreen() {
                 navController = navController,
                 startDestination =
 
-                if (onboardingState.value && haveToken.value) {
-                    MainScreen.Home.route
-                } else {
+//                if (onboardingState.value && haveToken.value) {
+//                    MainScreen.Home.route
+//                } else {
+//
+//                    if (haveToken.value) {
+//                        Log.e("UnsplashMainScreen", "true")
+//                        OnboardingScreens.AuthErrorScreen.route
+//                    } else {
+//                        Log.e("UnsplashMainScreen", "false")
+//                        OnboardingScreens.OnboardingMain.route
+//                    }
+//                }
 
-                    if (haveToken.value) {
-                        Log.e("UnsplashMainScreen", "true")
-                        OnboardingScreens.AuthErrorScreen.route
-                    } else {
-                        Log.e("UnsplashMainScreen", "false")
-                        OnboardingScreens.OnboardingMain.route
-                    }
+                when (onboardingState.value) {
+                    "onboard" -> { OnboardingScreens.OnboardingMain.route }
+                    "login" -> { MainScreen.Home.route }
+                    "main" -> { MainScreen.Home.route }
+                    else -> { OnboardingScreens.OnboardingMain.route }
                 }
 
             ) {
