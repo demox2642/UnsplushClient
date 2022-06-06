@@ -1,7 +1,7 @@
 package com.example.database.contracts
 
 object UserDBContracts {
-    const val TABLE_NAME = "user"
+    const val TABLE_NAME = "userDomain"
 
     object Colums {
 

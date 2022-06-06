@@ -10,7 +10,6 @@ import androidx.navigation.NavHostController
 fun DetailPhoto(photoId: String, navController: NavHostController) {
     Scaffold(
         content = {
-
         }
     )
 }

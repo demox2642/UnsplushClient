@@ -1,7 +1,7 @@
 package com.example.home.reposutory
 
 import android.util.Log
-import androidx.paging.*
+import androidx.paging.* // ktlint-disable no-wildcard-imports
 import com.example.database.UnsplashDatabase
 import com.example.database.models.UnsplashImage
 import com.example.home.models.HomePhoto
@@ -18,14 +18,6 @@ class HomeRepositoryImp @Inject constructor(
     private val homeService: HomeService,
     private val unsplashDatabase: UnsplashDatabase
 ) : HomeRepository {
-//    override suspend fun getPhotosList(): Flow<PagingData<HomePhoto>> {
-//        return Pager(
-//            config = PagingConfig(pageSize = PAGE_SIZE),
-//            pagingSourceFactory = {
-//                SearchPagingSource(homeService = homeService, unsplashDatabase = unsplashDatabase)
-//            }
-//        ).flow
-//    }
 
     override suspend fun getPhotosList(): Flow<PagingData<HomePhoto>> {
         val pagingSourceFactory = { unsplashDatabase.unsplashImageDao().getAllImages() }
@@ -71,18 +63,18 @@ class HomeRepositoryImp @Inject constructor(
         return test
     }
 
-    override suspend fun getPhotoInfo(photoId: String): HomePhoto {
-        val response = homeService.getPhotoInfo(photoId)
-        return HomePhoto(
-            id = response.id!!,
-            likes = response.likes,
-            urls_regular = response.urls?.regular,
-            user_name = response.user?.username,
-            user_fio = response.user?.username,
-            user_img = (response.user?.portfolioUrl).toString(),
-            likedByUser = false
-        )
-    }
+//    override suspend fun getPhotoInfo(photoId: String): HomePhoto {
+//        val response = homeService.getPhotoInfo(photoId)
+//        return HomePhoto(
+//            id = response.id!!,
+//            likes = response.likes,
+//            urls_regular = response.urlsDomain?.regular,
+//            user_name = response.userDomain?.username,
+//            user_fio = response.userDomain?.username,
+//            user_img = (response.userDomain?.portfolioUrl).toString(),
+//            likedByUser = false
+//        )
+//    }
 
     private fun UnsplashPhotoToHomePhoto(insplashPhoto: PagingData<UnsplashImage>): PagingData<HomePhoto> {
         return insplashPhoto.map {

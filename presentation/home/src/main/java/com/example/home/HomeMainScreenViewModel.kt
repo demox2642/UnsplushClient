@@ -6,18 +6,21 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
+import com.example.base_ui.errorlisiner.models.UnsplushError
+import com.example.base_ui.errorlisiner.models.UnsplushErrorType
 import com.example.base_ui.managers.ConnectionManager
 import com.example.home.models.HomePhoto
 import com.example.home.usecase.GetPhotosListUserCase
 import com.example.home.usecase.SearchPhotoUserCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(InternalCoroutinesApi::class)
 @HiltViewModel
 class HomeMainScreenViewModel @Inject constructor(
     private val getPhotosListUserCase: GetPhotosListUserCase,
@@ -33,7 +36,7 @@ class HomeMainScreenViewModel @Inject constructor(
     private val _refreshState = MutableStateFlow(false)
     val refreshState = _refreshState.asStateFlow()
 
-    private val _errorMessage = MutableStateFlow("")
+    private val _errorMessage = MutableStateFlow<UnsplushError?>(null)
     val errorMessage = _errorMessage.asStateFlow()
 
     private val _errorMessageState = MutableStateFlow(false)
@@ -48,6 +51,7 @@ class HomeMainScreenViewModel @Inject constructor(
         getPhotosList()
     }
 
+    @OptIn(InternalCoroutinesApi::class)
     fun getPhotosList() {
 
         viewModelScope.launch {
@@ -55,6 +59,7 @@ class HomeMainScreenViewModel @Inject constructor(
                 .cachedIn(viewModelScope)
                 .collect {
                     _photoList.value = it
+                    Log.e("HomeMainVM ", "getPhotosList = ${it}")
                 }
         }
     }
@@ -65,10 +70,9 @@ class HomeMainScreenViewModel @Inject constructor(
 
     fun postError(loadState: LoadState) {
         val networkError = "Unable to resolve host \"api.unsplash.com\""
-        if (loadState is LoadState.Error) {
-            _errorMessage.value = loadState.error.localizedMessage.toString()
-            Log.e("HomeMainVM ", "postError${_errorMessage.value.substringBefore(':') }")
-            if (_errorMessage.value.substringBefore(':') != networkError) {
+        if (loadState is LoadState.Error && loadState.error.localizedMessage != null) {
+            _errorMessage.value = UnsplushError(type = UnsplushErrorType.CRITICAL, text = loadState.error.localizedMessage.toString().substringBefore(':')) //Log.e("HomeMainVM ", "postError${loadState.error.localizedMessage.toString().substringBefore(':') }")
+            if (loadState.error.localizedMessage.toString().substringBefore(':') != networkError) {
                 _errorMessageState.value = true
             }
         }
@@ -76,6 +80,8 @@ class HomeMainScreenViewModel @Inject constructor(
 
     fun closeErrorDialog() {
         _errorMessageState.value = false
+        getPhotosList()
+        _searchText.value = ""
     }
 
     fun search(searchText: String) {
@@ -93,13 +99,23 @@ class HomeMainScreenViewModel @Inject constructor(
 
                 if (it.length == text.length) {
                     Log.e("HomeMainVM ", "search Start it = $it, text = $text")
-                    searchPhotoUserCase.searchPhotos(it)
-                        .cachedIn(viewModelScope)
-                        .collect {
-                            it.map {
-                                Log.e("HomeMainVM ", "search Start value = $it") }
-                            _photoList.value = it
-                        }
+                    val enLang = Regex("[A-z],[0-9]+")
+                    if (enLang.matches(it)) {
+                        searchPhotoUserCase.searchPhotos(it)
+                            .cachedIn(viewModelScope)
+                            .collect {
+                                _photoList.value = it
+                            }
+                    } else {
+                        _errorMessage.value = UnsplushError(
+                            type = UnsplushErrorType.ALERT,
+                            text = "search is only possible in English"
+//                           stringResource(
+//                               id = com.example.data.home.R.string.search_error
+//                            )
+                        )
+                        _errorMessageState.value = true
+                    }
                 }
             }
             .flowOn(Dispatchers.IO)

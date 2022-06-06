@@ -5,11 +5,12 @@ import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.* // ktlint-disable no-wildcard-imports
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -29,17 +29,17 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.HomeScreens
-import com.example.base_ui.dialogs.CustomErrorDialog
+import com.example.base_ui.errorlisiner.ErrorListener
 import com.example.base_ui.topbar.TopBarSearch
 import com.example.home.models.HomePhoto
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -79,21 +79,29 @@ fun HomeMainScreen(navController: NavHostController) {
                 ListContent(list = searchedImages) {
                     navController.navigate(HomeScreens.DetailPhoto.route + "/$it")
                 }
-
                 if (openErrorDialog) {
-                    Column(
-                        modifier = Modifier.fillMaxHeight(),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        CustomErrorDialog(
-
-                            title = "Uncknow Error",
-                            message = errorMessage,
-                            dismissButtonText = "Exit",
+                    Column() {
+                        ErrorListener(
+                            error = errorMessage!!,
                             closeDialog = viewModel::closeErrorDialog
                         )
                     }
                 }
+
+//
+//                    Coumn(
+//                        modifier = Modifier.fillMaxHeight(),
+//                        verticalArrangement = Arrangement.Center
+//                    ) {
+//                        CustomErrorDialog(
+//
+//                            title = "Uncknow Error",
+//                            message = errorMessage,
+//                            dismissButtonText = "Exit",
+//                            closeDialog = viewModel::closeErrorDialog
+//                        )
+//                    }
+//
             }
         }
     )
@@ -119,19 +127,48 @@ fun ListContent(list: LazyPagingItems<HomePhoto>, photoId: (String) -> Unit) {
 //        }
 //    }
 
-    val configuration = LocalConfiguration.current
-
-    val dimensions = if (configuration.screenWidthDp <= 400) 2 else 3
+//    val configuration = LocalConfiguration.current
+//
+//    val dimensions = if (configuration.screenWidthDp <= 400) 2 else 3
+//
+//    LazyVerticalGrid(
+//        columns = GridCells.Fixed(dimensions),
+//        modifier = Modifier.padding(4.dp)
+//    ) {
+//        items(list.itemCount) { index ->
+//            list[index]?.let {
+//                UnsplashItem(unsplashImage = it, photoId)
+//            }
+//            //     unsplashImage?.let {}
+//        }
+//    }
 
     LazyVerticalGrid(
-        columns = GridCells.Fixed(dimensions),
-        modifier = Modifier.padding(4.dp)
-    ) {
-        items(list.itemCount) { index ->
-            list[index]?.let {
-                UnsplashItem(unsplashImage = it, photoId)
+        columns = object : GridCells {
+
+            override fun Density.calculateCrossAxisCellSizes(
+                availableSize: Int,
+                spacing: Int
+            ): List<Int> {
+                val firstColumn = (availableSize - spacing) * 1 / 2
+                val secondColumn = availableSize - spacing - firstColumn
+                return listOf(firstColumn, secondColumn)
             }
-            //     unsplashImage?.let {}
+        },
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        contentPadding = PaddingValues(10.dp)
+    ) {
+        list.itemSnapshotList.forEachIndexed { index, photo ->
+            if (index % 3 == 0) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    UnsplashItem(unsplashImage = list[index]!!, photoId)
+                }
+            } else {
+                item(span = { GridItemSpan(1) }) {
+                    UnsplashItem(unsplashImage = list[index]!!, photoId)
+                }
+            }
         }
     }
 }
@@ -150,11 +187,6 @@ fun UnsplashItem(unsplashImage: HomePhoto, photoId: (String) -> Unit) {
         modifier = Modifier
             .clickable {
                 photoId(unsplashImage.id)
-//                val browserIntent = Intent(
-//                    Intent.ACTION_VIEW,
-//                    Uri.parse("https://unsplash.com/@${unsplashImage.user_name}?utm_source=DemoApp&utm_medium=referral")
-//                )
-//                ContextCompat.startActivity(context, browserIntent, null)
             }
             .height(300.dp)
             .fillMaxWidth(),
@@ -183,7 +215,7 @@ fun UnsplashItem(unsplashImage: HomePhoto, photoId: (String) -> Unit) {
         ) {
             Image(
                 painter = rememberImagePainter(data = unsplashImage.user_img),
-                contentDescription = "user image",
+                contentDescription = "userDomain image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(25.dp)
@@ -192,11 +224,11 @@ fun UnsplashItem(unsplashImage: HomePhoto, photoId: (String) -> Unit) {
             Spacer(modifier = Modifier.width(15.dp))
             Text(
                 text = buildAnnotatedString {
-                    append("Photo by ")
+                    //  append("Photo by ")
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Black)) {
-                        append(unsplashImage.user_name ?: "")
+                        append(unsplashImage.user_name?.take(9) ?: "")
                     }
-                    append(" on Unsplash")
+                    // append(" on Unsplash")
                 },
                 color = Color.White,
                 fontSize = MaterialTheme.typography.caption.fontSize,
@@ -253,9 +285,9 @@ fun LikeCounter(
 //    UnsplashItem(
 //        unsplashImage = UnsplashImage(
 //            id = "1",
-//            urls = Urls(regular = ""),
+//            urlsDomain = UrlsDomain(regular = ""),
 //            likes = 100,
-//            user = User(username = "Stevdza-San", userLinks = UserLinks(html = ""))
+//            userDomain = UserDomain(username = "Stevdza-San", userLinks = UserLinks(html = ""))
 //        )
 //    )
 // }

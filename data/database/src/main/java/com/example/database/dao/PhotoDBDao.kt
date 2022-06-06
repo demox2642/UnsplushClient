@@ -1,6 +1,6 @@
 package com.example.database.dao
 
-import androidx.room.*
+import androidx.room.* // ktlint-disable no-wildcard-imports
 import com.example.database.contracts.PhotoDBContracts
 import com.example.database.contracts.ProfileImageDBContracts
 import com.example.database.contracts.UrlsDBContracts
@@ -31,33 +31,33 @@ interface PhotoDBDao {
             "url.${UrlsDBContracts.Colums.REGULAR}," +
             "url.${UrlsDBContracts.Colums.SMALL}," +
             "url.${UrlsDBContracts.Colums.THUMB}," +
-            "user.${UserDBContracts.Colums.ID}," +
-            "user.${UserDBContracts.Colums.USERNAME}," +
-            "user.${UserDBContracts.Colums.NAME}," +
-            "user.${UserDBContracts.Colums.BIO}," +
-            "user.${UserDBContracts.Colums.LOCATION}," +
-            "user.${UserDBContracts.Colums.TOTAL_LIKES}," +
-            "user.${UserDBContracts.Colums.DOWNLOADS}," +
+            "userDomain.${UserDBContracts.Colums.ID}," +
+            "userDomain.${UserDBContracts.Colums.USERNAME}," +
+            "userDomain.${UserDBContracts.Colums.NAME}," +
+            "userDomain.${UserDBContracts.Colums.BIO}," +
+            "userDomain.${UserDBContracts.Colums.LOCATION}," +
+            "userDomain.${UserDBContracts.Colums.TOTAL_LIKES}," +
+            "userDomain.${UserDBContracts.Colums.DOWNLOADS}," +
             "user_im.${ProfileImageDBContracts.Colums.SMALL}," +
             "user_im.${ProfileImageDBContracts.Colums.MEDIUM}," +
             "user_im.${ProfileImageDBContracts.Colums.LARGE}," +
-            "user.${UserDBContracts.Colums.TOTAL_PHOTOS}," +
-            "user.${UserDBContracts.Colums.TOTAL_COLLECTIONS}," +
-            "user.${UserDBContracts.Colums.FOLLOWED_BY_USER}," +
-            "user.${UserDBContracts.Colums.FOLLOWERS_COUNT}," +
-            "user.${UserDBContracts.Colums.FIRST_NAME}," +
-            "user.${UserDBContracts.Colums.LAST_NAME}," +
-            "user.${UserDBContracts.Colums.INSTAGRAM_USERNAME}," +
-            "user.${UserDBContracts.Colums.TWITTER_USERNAME}," +
-            "user.${UserDBContracts.Colums.PORTFOLIO_URL}," +
-            "user.${UserDBContracts.Colums.UPDATE_AT}," +
+            "userDomain.${UserDBContracts.Colums.TOTAL_PHOTOS}," +
+            "userDomain.${UserDBContracts.Colums.TOTAL_COLLECTIONS}," +
+            "userDomain.${UserDBContracts.Colums.FOLLOWED_BY_USER}," +
+            "userDomain.${UserDBContracts.Colums.FOLLOWERS_COUNT}," +
+            "userDomain.${UserDBContracts.Colums.FIRST_NAME}," +
+            "userDomain.${UserDBContracts.Colums.LAST_NAME}," +
+            "userDomain.${UserDBContracts.Colums.INSTAGRAM_USERNAME}," +
+            "userDomain.${UserDBContracts.Colums.TWITTER_USERNAME}," +
+            "userDomain.${UserDBContracts.Colums.PORTFOLIO_URL}," +
+            "userDomain.${UserDBContracts.Colums.UPDATE_AT}," +
             "photo.${PhotoDBContracts.Colums.LIKED_BY_USER}," +
             "photo.${PhotoDBContracts.Colums.CREATED_AT}," +
             "photo.${PhotoDBContracts.Colums.UPDATE_AT}" +
             " FROM ${PhotoDBContracts.TABLE_NAME}  photo " +
             "LEFT JOIN ${UrlsDBContracts.TABLE_NAME} url ON photo.${PhotoDBContracts.Colums.URLS_ID} =  url.${UrlsDBContracts.Colums.ID} " +
-            "LEFT JOIN ${UserDBContracts.TABLE_NAME} user ON photo.${PhotoDBContracts.Colums.USER_ID} = user.${UserDBContracts.Colums.ID} " +
-            "LEFT JOIN ${ProfileImageDBContracts.TABLE_NAME} user_im ON user.${UserDBContracts.Colums.ID} = user_im. ${ProfileImageDBContracts.Colums.ID}"
+            "LEFT JOIN ${UserDBContracts.TABLE_NAME} userDomain ON photo.${PhotoDBContracts.Colums.USER_ID} = userDomain.${UserDBContracts.Colums.ID} " +
+            "LEFT JOIN ${ProfileImageDBContracts.TABLE_NAME} user_im ON userDomain.${UserDBContracts.Colums.ID} = user_im. ${ProfileImageDBContracts.Colums.ID}"
     )
     suspend fun getHomePhoto(): List<PhotoWithInfoDB>
 }

@@ -3,8 +3,11 @@ package com.example.unsplushdiplom.di
 import android.content.Context
 import androidx.paging.ExperimentalPagingApi
 import com.example.database.UnsplashDatabase
+import com.example.home.repository.DetailPhotoRepository
 import com.example.home.repository.HomeRepository
+import com.example.home.reposutory.DetailPhotoRepositoryImpl
 import com.example.home.reposutory.HomeRepositoryImp
+import com.example.home.services.DetailPhotoService
 import com.example.home.services.HomeService
 import com.example.services.AuthService
 import com.example.services.AuthenticationInterceptor
@@ -67,6 +70,12 @@ class DataModule {
         return UserRepositoryImpl(userStorage = userStorage)
     }
 
+    @Singleton
+    @Provides
+    fun provideDetailPhotoRepository(detailPhotoService: DetailPhotoService, unsplashDatabase: UnsplashDatabase): DetailPhotoRepository {
+        return DetailPhotoRepositoryImpl(detailPhotoService, unsplashDatabase)
+    }
+
     @OptIn(ExperimentalPagingApi::class)
     @Singleton
     @Provides
@@ -86,5 +95,12 @@ class DataModule {
     fun provideHomeService(retrofit: Retrofit.Builder): HomeService {
         return retrofit.build()
             .create(HomeService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideDetailPhotoService(retrofit: Retrofit.Builder): DetailPhotoService {
+        return retrofit.build()
+            .create(DetailPhotoService::class.java)
     }
 }

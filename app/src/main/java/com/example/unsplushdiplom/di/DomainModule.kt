@@ -1,6 +1,8 @@
 package com.example.unsplushdiplom.di
 
+import com.example.home.repository.DetailPhotoRepository
 import com.example.home.repository.HomeRepository
+import com.example.home.usecase.GetPhotoInfoUserCase
 import com.example.home.usecase.GetPhotosListUserCase
 import com.example.home.usecase.SearchPhotoUserCase
 import com.example.services.AuthService
@@ -70,5 +72,10 @@ class DomainModule {
     @Provides
     fun providesSearchPhotoUserCase(homeRepository: HomeRepository): SearchPhotoUserCase {
         return SearchPhotoUserCase(homeRepository = homeRepository)
+    }
+
+    @Provides
+    fun providesGetPhotoInfoUserCase(detailPhotoRepository: DetailPhotoRepository): GetPhotoInfoUserCase {
+        return GetPhotoInfoUserCase(detailPhotoRepository = detailPhotoRepository)
     }
 }
