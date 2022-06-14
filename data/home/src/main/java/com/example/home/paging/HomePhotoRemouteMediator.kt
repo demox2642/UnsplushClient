@@ -1,12 +1,13 @@
 package com.example.home.paging
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.example.database.UnsplashDatabase
-import com.example.database.models.*
+import com.example.database.models.* // ktlint-disable no-wildcard-imports
 import com.example.home.models.Order
 import com.example.home.services.HomeService
 
@@ -84,11 +85,13 @@ class HomePhotoRemouteMediator(
                                     large = it.user!!.profileImage?.large,
                                 )
 
-                            )
+                            ),
+                            likedByUser = it.likedByUser!!
                         )
                     }
                 )
             }
+            Log.e("Mediator", "response = $response")
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (e: Exception) {
             return MediatorResult.Error(e)

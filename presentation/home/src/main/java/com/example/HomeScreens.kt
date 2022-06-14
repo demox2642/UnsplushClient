@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.detailphoto.DetailPhoto
+import com.example.detailphoto.DetailPhotoScreen
 
 sealed class HomeScreens(
     val route: String
@@ -21,6 +21,6 @@ fun NavGraphBuilder.homeScreens(navController: NavHostController) {
             backStackEntry ->
         val arguments =
             (backStackEntry.arguments?.getString("photoId") ?: return@composable)
-        DetailPhoto(arguments, navController)
+        DetailPhotoScreen(arguments, navController)
     }
 }

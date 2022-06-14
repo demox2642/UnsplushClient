@@ -7,7 +7,7 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.example.database.UnsplashDatabase
-import com.example.database.models.*
+import com.example.database.models.* // ktlint-disable no-wildcard-imports
 import com.example.home.services.HomeService
 
 @ExperimentalPagingApi
@@ -103,7 +103,8 @@ class SearchPhotoRemouteMediator(
                                         medium = it.user!!.profileImage?.medium,
                                         large = it.user!!.profileImage?.large,
                                     )
-                                )
+                                ),
+                                likedByUser = it.likedByUser!!
                             )
                         }
                     )

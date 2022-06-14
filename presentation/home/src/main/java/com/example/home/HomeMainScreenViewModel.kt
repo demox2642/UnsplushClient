@@ -16,7 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.* // ktlint-disable no-wildcard-imports
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -51,15 +51,13 @@ class HomeMainScreenViewModel @Inject constructor(
         getPhotosList()
     }
 
-    @OptIn(InternalCoroutinesApi::class)
     fun getPhotosList() {
-
+        Log.e("HomeMainVM ", "getPhotosList =Start")
         viewModelScope.launch {
             getPhotosListUserCase.getPhotosList()
                 .cachedIn(viewModelScope)
                 .collect {
                     _photoList.value = it
-                    Log.e("HomeMainVM ", "getPhotosList = ${it}")
                 }
         }
     }
@@ -71,7 +69,10 @@ class HomeMainScreenViewModel @Inject constructor(
     fun postError(loadState: LoadState) {
         val networkError = "Unable to resolve host \"api.unsplash.com\""
         if (loadState is LoadState.Error && loadState.error.localizedMessage != null) {
-            _errorMessage.value = UnsplushError(type = UnsplushErrorType.CRITICAL, text = loadState.error.localizedMessage.toString().substringBefore(':')) //Log.e("HomeMainVM ", "postError${loadState.error.localizedMessage.toString().substringBefore(':') }")
+            _errorMessage.value = UnsplushError(
+                type = UnsplushErrorType.CRITICAL,
+                text = loadState.error.localizedMessage.toString().substringBefore(':')
+            )
             if (loadState.error.localizedMessage.toString().substringBefore(':') != networkError) {
                 _errorMessageState.value = true
             }
@@ -98,7 +99,6 @@ class HomeMainScreenViewModel @Inject constructor(
             .mapLatest {
 
                 if (it.length == text.length) {
-                    Log.e("HomeMainVM ", "search Start it = $it, text = $text")
                     val enLang = Regex("[A-z],[0-9]+")
                     if (enLang.matches(it)) {
                         searchPhotoUserCase.searchPhotos(it)
@@ -110,9 +110,6 @@ class HomeMainScreenViewModel @Inject constructor(
                         _errorMessage.value = UnsplushError(
                             type = UnsplushErrorType.ALERT,
                             text = "search is only possible in English"
-//                           stringResource(
-//                               id = com.example.data.home.R.string.search_error
-//                            )
                         )
                         _errorMessageState.value = true
                     }

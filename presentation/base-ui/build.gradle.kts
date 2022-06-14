@@ -34,7 +34,7 @@ android {
         compose = true
     }
     composeOptions {
-         kotlinCompilerVersion = "1.6.21"
+        kotlinCompilerVersion = "1.6.21"
         kotlinCompilerExtensionVersion = Versions.compose
     }
     namespace = "com.example.base_ui"
@@ -57,4 +57,5 @@ dependencies {
     implementation(Accompanist.systemUiController)
     implementation(Navigation.composeNavigation)
     implementation(Navigation.hiltNavigation)
+    implementation(Coil.coil)
 }

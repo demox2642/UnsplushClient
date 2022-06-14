@@ -20,6 +20,9 @@ interface UnsplashImageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addImages(images: List<UnsplashImage>)
 
+    @Query("SELECT * FROM ${UnsplashImageDBContracts.TABLE_NAME} WHERE ${UnsplashImageDBContracts.Colums.ID} = :id")
+    suspend fun getImageWithInfo(id: String): UnsplashImage
+
     @Query("DELETE FROM ${UnsplashImageDBContracts.TABLE_NAME}")
     suspend fun deleteAllImages()
 }

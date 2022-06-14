@@ -11,13 +11,18 @@ data class DetailPhoto(
     var downloads: Int? = null,
     var likes: Int? = null,
     var location: LocationDomain? = null,
-    var urlsDomain: UrlsDomain? = null,
+    var urlsPhoto: String? = null,
     var linksDomain: LinksDomain? = null,
     var userDomain: UserDomain? = null,
     var categories: List<CategoryDomain> = ArrayList(),
     var description: String? = null,
+    var downloadLink: String? = null,
+    var exifDomain: ExifDomain? = null,
 
     @SerializedName("liked_by_user") var likedByUser: Boolean? = null,
     @SerializedName("created_at") var createdAt: String? = null,
-    @SerializedName("updated_at") var updatedAt: String? = null
+    @SerializedName("updated_at") var updatedAt: String? = null,
+    var code: Int? = null,
+    var errorMessage: String ? = null
+
 )

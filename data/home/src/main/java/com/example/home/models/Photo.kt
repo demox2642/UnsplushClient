@@ -16,6 +16,7 @@ data class Photo(
     var user: User? = null,
     var categories: List<Category> = ArrayList(),
     var description: String? = null,
+    var exif: Exif? = null,
 
     @SerializedName("liked_by_user") var likedByUser: Boolean? = null,
     @SerializedName("created_at") var createdAt: String? = null,
