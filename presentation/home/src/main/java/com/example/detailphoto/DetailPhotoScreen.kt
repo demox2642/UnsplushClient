@@ -5,6 +5,7 @@ package com.example.detailphoto
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.* // ktlint-disable no-wildcard-imports
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
@@ -71,19 +72,45 @@ fun DetailPhotoContent(photoInfo: DetailPhoto) {
         Row() {
             BasePhotoScreen(unsplashImage = homePhoto, modifier = Modifier.padding(0.dp))
         }
-        Row(modifier = Modifier.padding(10.dp)) {
-            LocationPhoto(localText = "sdfhsdf", showLocation = {})
+        Row() {
+            LazyRow() {
+                // Row(modifier = Modifier.padding(10.dp)) {
+                if (photoInfo.location != null) {
+                    item {
+                        LocationPhoto(
+                            localText = photoInfo.location?.country.toString() + " " + photoInfo.location?.city.toString(),
+                            showLocation = {}
+                        )
+                    }
+                }
+                //  }
+                //  Row(
+//                modifier = Modifier.padding(10.dp)
+//                    .fillMaxWidth(),
+//                horizontalArrangement = Arrangement.Center
+                //   ) {
+                item { PhotoCategories(photoInfo.categories) }
+                //    }
+                //  Row(modifier = Modifier.padding(10.dp)) {
+                item { MakePhotoInfo(exif = photoInfo.exifDomain, user = photoInfo.userDomain) }
+                //  }
+            }
         }
-        Row(
-            modifier = Modifier.padding(10.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            PhotoCategories(photoInfo.categories)
-        }
-        Row(modifier = Modifier.padding(10.dp)) {
-            MakePhotoInfo(exif = photoInfo.exifDomain, user = photoInfo.userDomain)
-        }
+//        Row(modifier = Modifier.padding(10.dp)) {
+//            if (photoInfo.location != null) {
+//                LocationPhoto(localText = photoInfo.location?.country.toString() + " " + photoInfo.location?.city.toString(), showLocation = {})
+//            }
+//        }
+//        Row(
+//            modifier = Modifier.padding(10.dp)
+//                .fillMaxWidth(),
+//            horizontalArrangement = Arrangement.Center
+//        ) {
+//            PhotoCategories(photoInfo.categories)
+//        }
+//        Row(modifier = Modifier.padding(10.dp)) {
+//            MakePhotoInfo(exif = photoInfo.exifDomain, user = photoInfo.userDomain)
+//        }
     }
 }
 
@@ -130,5 +157,5 @@ fun MakePhotoInfo(exif: ExifDomain?, user: UserDomain?) {
 @Preview
 @Composable
 fun LocationPhotoPreview() {
-    LocationPhoto(localText = "sdfhsdf", showLocation = {})
+    LocationPhoto(localText = "sdfhsdf") {}
 }

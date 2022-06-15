@@ -14,13 +14,11 @@ import com.example.home.usecase.GetPhotosListUserCase
 import com.example.home.usecase.SearchPhotoUserCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.* // ktlint-disable no-wildcard-imports
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(InternalCoroutinesApi::class)
 @HiltViewModel
 class HomeMainScreenViewModel @Inject constructor(
     private val getPhotosListUserCase: GetPhotosListUserCase,

@@ -5,7 +5,7 @@ object UrlsDBContracts {
 
     object Colums {
 
-        const val ID = "id"
+        const val ID = "id_urls"
         const val RAW = "raw"
         const val FULL = "full"
         const val REGULAR = "regular"

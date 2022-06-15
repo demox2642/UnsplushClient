@@ -25,4 +25,7 @@ interface UnsplashImageDao {
 
     @Query("DELETE FROM ${UnsplashImageDBContracts.TABLE_NAME}")
     suspend fun deleteAllImages()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertImage(unsplashImage: UnsplashImage)
 }

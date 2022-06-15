@@ -81,25 +81,20 @@ class SearchPhotoRemouteMediator(
                             Log.e("SearchPhotoRemoute", "response = ${it.description}")
                             UnsplashImage(
                                 id = it.id!!,
-                                urls = Urls(it.urls!!.regular!!),
+                                urls = UrlsDB(regular = it.urls!!.regular!!),
                                 likes = it.likes ?: 0,
                                 description = if (refactorDescription(it.description) != null && refactorDescription(it.description) == false) {
                                     it.description
                                 } else {
                                     null
                                 },
-                                description_ru = if (refactorDescription(it.description) != null && refactorDescription(it.description) == true) {
-                                    Log.e("SearchPhotoRemoute", "description_ru $it")
-                                    it.description
-                                } else {
-                                    null
-                                },
-                                user = User(
+
+                                user = UserDB(
                                     userLinks = UserLinks(html = it.user?.portfolioUrl ?: ""),
                                     username = it.user?.username ?: "user",
                                     profileImage = ProfileImageDB(
                                         id_prof_im = it.user?.id!!,
-                                        small = it.user!!.profileImage?.small,
+                                        small_im = it.user!!.profileImage?.small,
                                         medium = it.user!!.profileImage?.medium,
                                         large = it.user!!.profileImage?.large,
                                     )

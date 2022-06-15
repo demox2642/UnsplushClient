@@ -1,6 +1,7 @@
 package com.example.home.reposutory
 
 import com.example.database.UnsplashDatabase
+import com.example.database.models.* // ktlint-disable no-wildcard-imports
 import com.example.home.models.* // ktlint-disable no-wildcard-imports
 import com.example.home.repository.DetailPhotoRepository
 import com.example.home.services.DetailPhotoService
@@ -62,6 +63,74 @@ class DetailPhotoRepositoryImpl @Inject constructor(
                         )
 
                     )
+                    unsplashDatabase.unsplashImageDao().insertImage(
+                        UnsplashImage(
+                            id = detailPhoto.id!!,
+                            description = detailPhoto.description,
+                            urls = UrlsDB(
+                                raw = response.urls!!.raw,
+
+                                full = response.urls!!.full,
+
+                                regular = response.urls!!.regular!!,
+
+                                small = response.urls!!.small,
+
+                                thumb = response.urls!!.thumb,
+                            ),
+                            likes = detailPhoto.likes!!,
+                            user = UserDB(
+                                username = response.user.id,
+                                name = response.user.id,
+                                bio = response.user.id,
+                                location_user = response.user.location,
+                                totalLikes = response.user.totalLikes,
+                                downloads_user = response.user.downloads,
+                                profileImage = ProfileImageDB(
+                                    id_prof_im = response.user.id!!,
+
+                                    small_im = response.user.profileImage?.small,
+
+                                    medium = response.user.profileImage?.medium,
+
+                                    large = response.user.profileImage?.large,
+                                ),
+                                totalPhotos = response.user.totalPhotos,
+                                totalCollections = response.user.totalCollections,
+                                followedByUser = response.user.followedByUser,
+                                followersCount = response.user.followersCount,
+                                firstName = response.user.firstName,
+                                lastName = response.user.lastName,
+                                instagramUsername = response.user.instagramUsername,
+                                twitterUsername = response.user.twitterUsername,
+                                portfolioUrl = response.user.portfolioUrl,
+                                updatedAt_user = response.user.updatedAt,
+                                userLinks = UserLinks(response.user.links?.html.toString())
+                            ),
+                            likedByUser = response.likedByUser!!,
+                            width = response.width,
+                            height = response.height,
+                            color = response.color,
+                            downloads = response.downloads,
+
+                            location = LocationDB(
+                                city = response.location?.city,
+                                country = response.location?.country,
+                                position = PositionDB(
+                                    latitude = response.location?.position?.latitude,
+                                    longitude = response.location?.position?.longitude,
+                                )
+                            ),
+
+                            categories = response.categories.map {
+                                it.title
+                            }.joinToString("#"),
+
+                            exif = ExifDB(),
+                            createdAt = response.createdAt,
+                            updatedAt = response.updatedAt
+                        )
+                    )
                 } else {
                     detailPhoto = getPhotoFromCashe(photoId = photoId, code = this.code(), errorMessage = this.message())
                 }
@@ -82,7 +151,7 @@ class DetailPhotoRepositoryImpl @Inject constructor(
             userDomain = UserDomain(
                 username = response.user.username,
                 profileImageDomain = ProfileImageDomain(
-                    small = response.user.profileImage?.small
+                    small = response.user.profileImage?.small_im
                 )
             ),
             likedByUser = response.likedByUser,

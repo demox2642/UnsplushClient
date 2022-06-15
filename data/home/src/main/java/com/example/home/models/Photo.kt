@@ -13,7 +13,7 @@ data class Photo(
     var location: Location? = null,
     var urls: Urls? = null,
     var links: Links? = null,
-    var user: User? = null,
+    var user: User,
     var categories: List<Category> = ArrayList(),
     var description: String? = null,
     var exif: Exif? = null,

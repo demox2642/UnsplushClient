@@ -1,6 +1,5 @@
 package com.example.home.paging
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -71,16 +70,21 @@ class HomePhotoRemouteMediator(
                     images = response.map {
                         UnsplashImage(
                             id = it.id!!,
-                            urls = Urls(it.urls!!.regular!!),
+                            urls = UrlsDB(
+                                raw = it.urls!!.raw,
+                                full = it.urls!!.full,
+                                regular = it.urls!!.regular!!,
+                                small = it.urls!!.small,
+                                thumb = it.urls!!.thumb
+                            ),
                             likes = it.likes ?: 0,
                             description = it.description,
-                            description_ru = null,
-                            user = User(
+                            user = UserDB(
                                 userLinks = UserLinks(html = it.user?.portfolioUrl ?: ""),
                                 username = it.user?.username ?: "user",
                                 profileImage = ProfileImageDB(
                                     id_prof_im = it.user?.id!!,
-                                    small = it.user!!.profileImage?.small,
+                                    small_im = it.user!!.profileImage?.small,
                                     medium = it.user!!.profileImage?.medium,
                                     large = it.user!!.profileImage?.large,
                                 )
@@ -91,7 +95,7 @@ class HomePhotoRemouteMediator(
                     }
                 )
             }
-            Log.e("Mediator", "response = $response")
+            // Log.e("Mediator", "response = $response")
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (e: Exception) {
             return MediatorResult.Error(e)

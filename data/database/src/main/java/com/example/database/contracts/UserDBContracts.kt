@@ -11,7 +11,7 @@ object UserDBContracts {
         const val BIO = "bio"
         const val LOCATION = "location"
         const val TOTAL_LIKES = "total_likes"
-        const val DOWNLOADS = "downloads"
+        const val DOWNLOADS = "downloads_user"
         const val BAGE_ID = "badge_id"
         const val PROFILE_IMAGE_ID = "profile_image_id"
         const val TOTAL_PHOTOS = "total_photos"
