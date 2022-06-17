@@ -1,7 +1,6 @@
 package com.example.home.models
 
 import com.google.gson.annotations.SerializedName
-import java.util.ArrayList
 
 data class DetailPhoto(
     var id: String? = null,
@@ -14,7 +13,7 @@ data class DetailPhoto(
     var urlsPhoto: String? = null,
     var linksDomain: LinksDomain? = null,
     var userDomain: UserDomain? = null,
-    var categories: List<CategoryDomain> = ArrayList(),
+    var categories: String? = null,
     var description: String? = null,
     var downloadLink: String? = null,
     var exifDomain: ExifDomain? = null,

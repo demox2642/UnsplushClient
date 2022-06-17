@@ -22,7 +22,12 @@ class HomeRepositoryImp @Inject constructor(
     override suspend fun getPhotosList(): Flow<PagingData<HomePhoto>> {
         val pagingSourceFactory = { unsplashDatabase.unsplashImageDao().getAllImages() }
         return Pager(
-            config = PagingConfig(pageSize = PAGE_SIZE),
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                prefetchDistance = PAGE_SIZE,
+                initialLoadSize = PAGE_SIZE * 3,
+                //       maxSize = 30
+            ),
             remoteMediator = HomePhotoRemouteMediator(
                 homeService = homeService,
                 unsplashDatabase = unsplashDatabase

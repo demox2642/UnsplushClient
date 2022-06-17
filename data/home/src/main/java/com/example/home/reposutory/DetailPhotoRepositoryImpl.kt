@@ -27,17 +27,20 @@ class DetailPhotoRepositoryImpl @Inject constructor(
                         downloads = response?.downloads,
                         likes = response?.likes,
                         urlsPhoto = response?.urls!!.regular,
-                        location = LocationDomain(
-                            city = response?.location?.city,
-                            country = response?.location?.country,
-                            positionDomain = PositionDomain(
-                                latitude = response?.location?.position?.latitude,
-                                longitude = response?.location?.position?.latitude
-                            ),
+                        location = if (response.location?.city != null || response.location?.country != null) {
+                            LocationDomain(
+                                city = response.location?.city,
+                                country = response.location?.country,
+                                positionDomain = if (response.location?.position?.latitude != null && response.location?.position?.longitude != null) {
+                                    PositionDomain(
+                                        latitude = response.location?.position?.latitude!!,
+                                        longitude = response.location?.position?.longitude!!
+                                    )
+                                } else { null },
 
-                        ),
+                            )
+                        } else { null },
                         userDomain = UserDomain(
-                            id = response?.user?.id,
                             username = response?.user?.username,
                             name = response?.user?.name,
                             profileImageDomain = ProfileImageDomain(
@@ -45,14 +48,11 @@ class DetailPhotoRepositoryImpl @Inject constructor(
                             )
                         ),
                         categories = response?.categories.map {
-                            CategoryDomain(
-                                it.id,
-                                it.title
-                            )
-                        },
+                            it.title
+                        }.joinToString("#"),
                         description = response.description,
                         downloadLink = response.urls!!.raw,
-                        likedByUser = response?.likedByUser,
+                        likedByUser = response.likedByUser,
                         exifDomain = ExifDomain(
                             make = response.exif?.make,
                             model = response.exif?.model,
@@ -146,15 +146,51 @@ class DetailPhotoRepositoryImpl @Inject constructor(
         val response = unsplashDatabase.unsplashImageDao().getImageWithInfo(id = photoId)
         return DetailPhoto(
             id = photoId,
+            width = response.width,
+            height = response.width,
+            color = response.color,
+            downloads = response.downloads,
             likes = response.likes,
             urlsPhoto = response.urls.regular,
+            location = LocationDomain(
+                city = response.location?.city,
+                country = response.location?.country,
+                positionDomain = if (response.location?.position?.latitude != null && response.location?.position?.longitude != null) {
+                    PositionDomain(
+                        latitude = response.location?.position?.latitude!!,
+                        longitude = response.location?.position?.longitude!!
+                    )
+                } else { null }
+
+            ),
             userDomain = UserDomain(
                 username = response.user.username,
+                name = response.user.name,
                 profileImageDomain = ProfileImageDomain(
                     small = response.user.profileImage?.small_im
                 )
             ),
+            categories = response.categories,
+            description = response.description,
+            downloadLink = response.urls.raw,
             likedByUser = response.likedByUser,
+            exifDomain = ExifDomain(
+                make = response.exif?.make,
+                model = response.exif?.model,
+                aperture = response.exif?.aperture,
+                iso = response.exif?.iso,
+                exposureTime = response.exif?.exposureTime,
+                focalLength = response.exif?.focalLength,
+            ),
+//            likes = response.likes,
+//            urlsPhoto = response.urls.regular,
+//            userDomain = UserDomain(
+//                username = response.user.username,
+//                profileImageDomain = ProfileImageDomain(
+//                    small = response.user.profileImage?.small_im
+//                )
+//            ),
+//            likedByUser = response.likedByUser,
             code = code,
             errorMessage = errorMessage
         )

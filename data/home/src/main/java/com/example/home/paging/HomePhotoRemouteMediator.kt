@@ -1,5 +1,6 @@
 package com.example.home.paging
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -47,7 +48,11 @@ class HomePhotoRemouteMediator(
                 }
             }
 
-            val response = homeService.getPhotoList(page = currentPage, perPage = PagingConst.PAGE_SIZE, orderBy = Order.POPULAR.name)
+            val response = homeService.getPhotoList(
+                page = currentPage,
+                perPage = PagingConst.PAGE_SIZE,
+                orderBy = Order.POPULAR.name
+            )
             val endOfPaginationReached = response.isEmpty()
 
             val prevPage = if (currentPage == 1) null else currentPage - 1
@@ -95,7 +100,7 @@ class HomePhotoRemouteMediator(
                     }
                 )
             }
-            // Log.e("Mediator", "response = $response")
+            Log.e("Mediator", "response = Start")
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (e: Exception) {
             return MediatorResult.Error(e)

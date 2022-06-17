@@ -17,7 +17,7 @@ interface UnsplashImageDao {
     @Query("SELECT * FROM ${UnsplashImageDBContracts.TABLE_NAME} WHERE description LIKE  '%' ||  :desc|| '%'")
     fun searchImages(desc: String): PagingSource<Int, UnsplashImage>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addImages(images: List<UnsplashImage>)
 
     @Query("SELECT * FROM ${UnsplashImageDBContracts.TABLE_NAME} WHERE ${UnsplashImageDBContracts.Colums.ID} = :id")

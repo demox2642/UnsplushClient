@@ -1,7 +1,6 @@
 package com.example.home
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.* // ktlint-disable no-wildcard-imports
@@ -97,7 +96,7 @@ fun HomeMainScreen(navController: NavHostController) {
 @ExperimentalCoilApi
 @Composable
 fun ListContent(list: LazyPagingItems<HomePhoto>, photoId: (String) -> Unit) {
-    Log.e("ListContent", "Start")
+    // Log.e("ListContent", "Start list = ${list.itemSnapshotList}")
     LazyVerticalGrid(
         columns = object : GridCells {
 

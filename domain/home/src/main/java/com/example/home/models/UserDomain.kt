@@ -3,7 +3,6 @@ package com.example.home.models
 import com.google.gson.annotations.SerializedName
 
 data class UserDomain(
-    var id: String? = null,
     var username: String? = null,
     var name: String? = null,
     var bio: String? = null,
