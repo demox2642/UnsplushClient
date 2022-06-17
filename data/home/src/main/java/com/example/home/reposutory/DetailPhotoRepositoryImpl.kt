@@ -1,5 +1,7 @@
 package com.example.home.reposutory
 
+import android.util.Log
+import androidx.room.withTransaction
 import com.example.database.UnsplashDatabase
 import com.example.database.models.* // ktlint-disable no-wildcard-imports
 import com.example.home.models.* // ktlint-disable no-wildcard-imports
@@ -19,6 +21,81 @@ class DetailPhotoRepositoryImpl @Inject constructor(
             detailPhotoService.getPhotoInfo(photoId).apply {
                 val response = this.body()
                 if (this.isSuccessful) {
+                    try {
+                        unsplashDatabase.withTransaction {
+                            unsplashDatabase.unsplashImageDao().insertImage(
+                                UnsplashImage(
+                                    id = photoId,
+                                    description = response!!.description,
+                                    urls = UrlsDB(
+                                        raw = response.urls!!.raw,
+
+                                        full = response.urls!!.full,
+
+                                        regular = response.urls!!.regular!!,
+
+                                        small = response.urls!!.small,
+
+                                        thumb = response.urls!!.thumb,
+                                    ),
+                                    likes = response.likes!!,
+                                    user = UserDB(
+                                        username = response.user.id,
+                                        name = response.user.id,
+                                        bio = response.user.id,
+                                        location_user = response.user.location,
+                                        totalLikes = response.user.totalLikes,
+                                        downloads_user = response.user.downloads,
+                                        profileImage = ProfileImageDB(
+                                            id_prof_im = response.user.id!!,
+
+                                            small_im = response.user.profileImage?.small,
+
+                                            medium = response.user.profileImage?.medium,
+
+                                            large = response.user.profileImage?.large,
+                                        ),
+                                        totalPhotos = response.user.totalPhotos,
+                                        totalCollections = response.user.totalCollections,
+                                        followedByUser = response.user.followedByUser,
+                                        followersCount = response!!.user.followersCount,
+                                        firstName = response!!.user.firstName,
+                                        lastName = response.user.lastName,
+                                        instagramUsername = response.user.instagramUsername,
+                                        twitterUsername = response.user.twitterUsername,
+                                        portfolioUrl = response.user.portfolioUrl,
+                                        updatedAt_user = response.user.updatedAt,
+                                        userLinks = UserLinks(response.user.links?.html.toString())
+                                    ),
+                                    likedByUser = response.likedByUser!!,
+                                    width = response.width,
+                                    height = response.height,
+                                    color = response.color,
+                                    downloads = response.downloads,
+
+                                    location = LocationDB(
+                                        city = response.location?.city,
+                                        country = response.location?.country,
+                                        position = PositionDB(
+                                            latitude = response.location?.position?.latitude,
+                                            longitude = response.location?.position?.longitude,
+                                        )
+                                    ),
+
+                                    categories = response.categories.map {
+                                        it.title
+                                    }.joinToString("#"),
+
+                                    exif = ExifDB(),
+                                    createdAt = response.createdAt,
+                                    updatedAt = response.updatedAt
+                                )
+                            )
+                        }
+                    } catch (e: Exception) {
+                        Log.e("getPhotoInfo", "Insert PHOTO ERROR: $e")
+                    }
+
                     detailPhoto = DetailPhoto(
                         id = photoId,
                         width = response?.width,
@@ -63,74 +140,74 @@ class DetailPhotoRepositoryImpl @Inject constructor(
                         )
 
                     )
-                    unsplashDatabase.unsplashImageDao().insertImage(
-                        UnsplashImage(
-                            id = detailPhoto.id!!,
-                            description = detailPhoto.description,
-                            urls = UrlsDB(
-                                raw = response.urls!!.raw,
-
-                                full = response.urls!!.full,
-
-                                regular = response.urls!!.regular!!,
-
-                                small = response.urls!!.small,
-
-                                thumb = response.urls!!.thumb,
-                            ),
-                            likes = detailPhoto.likes!!,
-                            user = UserDB(
-                                username = response.user.id,
-                                name = response.user.id,
-                                bio = response.user.id,
-                                location_user = response.user.location,
-                                totalLikes = response.user.totalLikes,
-                                downloads_user = response.user.downloads,
-                                profileImage = ProfileImageDB(
-                                    id_prof_im = response.user.id!!,
-
-                                    small_im = response.user.profileImage?.small,
-
-                                    medium = response.user.profileImage?.medium,
-
-                                    large = response.user.profileImage?.large,
-                                ),
-                                totalPhotos = response.user.totalPhotos,
-                                totalCollections = response.user.totalCollections,
-                                followedByUser = response.user.followedByUser,
-                                followersCount = response.user.followersCount,
-                                firstName = response.user.firstName,
-                                lastName = response.user.lastName,
-                                instagramUsername = response.user.instagramUsername,
-                                twitterUsername = response.user.twitterUsername,
-                                portfolioUrl = response.user.portfolioUrl,
-                                updatedAt_user = response.user.updatedAt,
-                                userLinks = UserLinks(response.user.links?.html.toString())
-                            ),
-                            likedByUser = response.likedByUser!!,
-                            width = response.width,
-                            height = response.height,
-                            color = response.color,
-                            downloads = response.downloads,
-
-                            location = LocationDB(
-                                city = response.location?.city,
-                                country = response.location?.country,
-                                position = PositionDB(
-                                    latitude = response.location?.position?.latitude,
-                                    longitude = response.location?.position?.longitude,
-                                )
-                            ),
-
-                            categories = response.categories.map {
-                                it.title
-                            }.joinToString("#"),
-
-                            exif = ExifDB(),
-                            createdAt = response.createdAt,
-                            updatedAt = response.updatedAt
-                        )
-                    )
+//                    unsplashDatabase.unsplashImageDao().insertImage(
+//                        UnsplashImage(
+//                            id = detailPhoto.id!!,
+//                            description = detailPhoto.description,
+//                            urls = UrlsDB(
+//                                raw = response.urls!!.raw,
+//
+//                                full = response.urls!!.full,
+//
+//                                regular = response.urls!!.regular!!,
+//
+//                                small = response.urls!!.small,
+//
+//                                thumb = response.urls!!.thumb,
+//                            ),
+//                            likes = detailPhoto.likes!!,
+//                            user = UserDB(
+//                                username = response.user.id,
+//                                name = response.user.id,
+//                                bio = response.user.id,
+//                                location_user = response.user.location,
+//                                totalLikes = response.user.totalLikes,
+//                                downloads_user = response.user.downloads,
+//                                profileImage = ProfileImageDB(
+//                                    id_prof_im = response.user.id!!,
+//
+//                                    small_im = response.user.profileImage?.small,
+//
+//                                    medium = response.user.profileImage?.medium,
+//
+//                                    large = response.user.profileImage?.large,
+//                                ),
+//                                totalPhotos = response.user.totalPhotos,
+//                                totalCollections = response.user.totalCollections,
+//                                followedByUser = response.user.followedByUser,
+//                                followersCount = response.user.followersCount,
+//                                firstName = response.user.firstName,
+//                                lastName = response.user.lastName,
+//                                instagramUsername = response.user.instagramUsername,
+//                                twitterUsername = response.user.twitterUsername,
+//                                portfolioUrl = response.user.portfolioUrl,
+//                                updatedAt_user = response.user.updatedAt,
+//                                userLinks = UserLinks(response.user.links?.html.toString())
+//                            ),
+//                            likedByUser = response.likedByUser!!,
+//                            width = response.width,
+//                            height = response.height,
+//                            color = response.color,
+//                            downloads = response.downloads,
+//
+//                            location = LocationDB(
+//                                city = response.location?.city,
+//                                country = response.location?.country,
+//                                position = PositionDB(
+//                                    latitude = response.location?.position?.latitude,
+//                                    longitude = response.location?.position?.longitude,
+//                                )
+//                            ),
+//
+//                            categories = response.categories.map {
+//                                it.title
+//                            }.joinToString("#"),
+//
+//                            exif = ExifDB(),
+//                            createdAt = response.createdAt,
+//                            updatedAt = response.updatedAt
+//                        )
+                    //                   )
                 } else {
                     detailPhoto = getPhotoFromCashe(photoId = photoId, code = this.code(), errorMessage = this.message())
                 }
@@ -142,8 +219,13 @@ class DetailPhotoRepositoryImpl @Inject constructor(
         return detailPhoto
     }
 
+    override suspend fun downloadPhoto(photoId: String) {
+        TODO("Not yet implemented")
+    }
+
     private suspend fun getPhotoFromCashe(photoId: String, code: Int, errorMessage: String): DetailPhoto {
         val response = unsplashDatabase.unsplashImageDao().getImageWithInfo(id = photoId)
+        Log.e("getPhotoFromCashe", "response = $response")
         return DetailPhoto(
             id = photoId,
             width = response.width,

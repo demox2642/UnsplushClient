@@ -1,10 +1,7 @@
 package com.example.database.dao
 
 import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.database.contracts.UnsplashImageDBContracts
 import com.example.database.models.UnsplashImage
 
@@ -26,6 +23,6 @@ interface UnsplashImageDao {
     @Query("DELETE FROM ${UnsplashImageDBContracts.TABLE_NAME}")
     suspend fun deleteAllImages()
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Update(entity = UnsplashImage::class)
     suspend fun insertImage(unsplashImage: UnsplashImage)
 }
